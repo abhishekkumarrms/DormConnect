@@ -10,8 +10,12 @@ async def lifespan(app: FastAPI):
     # Startup
     from app.core.redis_client import get_redis_pool
     await get_redis_pool()
+    from app.core.scheduler import start_scheduler
+    start_scheduler(app)
     yield
     # Shutdown
+    from app.core.scheduler import stop_scheduler
+    stop_scheduler()
     from app.core.redis_client import redis_pool
     if redis_pool:
         await redis_pool.aclose()
