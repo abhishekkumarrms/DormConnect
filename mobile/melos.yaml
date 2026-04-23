@@ -1,0 +1,26 @@
+name: dormconnect_mobile
+
+packages:
+  - packages/**
+  - student_app
+  - staff_app
+  - guard_app
+  - guardian_app
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+scripts:
+  analyze:
+    run: dart analyze
+    exec:
+      concurrency: 4
+
+  format:
+    run: dart format . --fix
+
+  build:android:
+    run: flutter build apk --release
+    exec:
+      concurrency: 1
