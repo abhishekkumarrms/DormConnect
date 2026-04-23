@@ -1,12 +1,15 @@
+import 'package:dormconnect_core/dormconnect_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dormconnect_core/dormconnect_core.dart';
+
 import 'screens/auth/guardian_login_screen.dart';
-import 'screens/dashboard/guardian_dashboard_screen.dart';
-import 'screens/leaves/guardian_leaves_screen.dart';
-import 'screens/movement/movement_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/movements_screen.dart';
+import 'screens/leave_screen.dart';
+import 'screens/leave_detail_screen.dart';
+import 'screens/notices_screen.dart';
+import 'screens/contact_screen.dart';
 import 'screens/sos/guardian_sos_screen.dart';
-import 'screens/shell_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(authProvider);
@@ -17,7 +20,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isLogin = state.matchedLocation == '/login' ||
           state.matchedLocation.startsWith('/otp');
       if (!isAuth && !isLogin) return '/login';
-      if (isAuth && isLogin) return '/dashboard';
+      if (isAuth && isLogin) return '/home';
       return null;
     },
     routes: [
@@ -26,21 +29,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/otp',
           builder: (_, state) =>
               GuardianOtpScreen(phone: state.extra as String)),
-      ShellRoute(
-        builder: (context, state, child) => ShellScreen(child: child),
-        routes: [
-          GoRoute(
-              path: '/dashboard',
-              builder: (_, __) => const GuardianDashboardScreen()),
-          GoRoute(
-              path: '/leaves', builder: (_, __) => const GuardianLeavesScreen()),
-          GoRoute(
-              path: '/movement',
-              builder: (_, __) => const MovementScreen()),
-          GoRoute(
-              path: '/sos', builder: (_, __) => const GuardianSosScreen()),
-        ],
+      GoRoute(path: '/home', builder: (_, __) => const HomeScreen()),
+      GoRoute(path: '/movements', builder: (_, __) => const MovementsScreen()),
+      GoRoute(path: '/leaves', builder: (_, __) => const LeaveScreen()),
+      GoRoute(
+        path: '/leaves/:id',
+        builder: (_, state) =>
+            LeaveDetailScreen(leaveId: state.pathParameters['id']!),
       ),
+      GoRoute(path: '/notices', builder: (_, __) => const NoticesScreen()),
+      GoRoute(path: '/contact', builder: (_, __) => const ContactScreen()),
+      GoRoute(path: '/sos', builder: (_, __) => const GuardianSosScreen()),
     ],
   );
 });

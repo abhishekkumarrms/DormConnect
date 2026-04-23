@@ -1,14 +1,20 @@
+import 'package:dormconnect_core/dormconnect_core.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:dormconnect_core/dormconnect_core.dart';
 import 'router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  // Firebase optional — no crash without google-services.json
+  try {
+    await Firebase.initializeApp();
+  } catch (_) {}
+
   await Hive.initFlutter();
+
   runApp(const ProviderScope(child: GuardianApp()));
 }
 
@@ -20,9 +26,14 @@ class GuardianApp extends ConsumerWidget {
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'DormConnect Parent',
-      theme: AppTheme.light,
-      routerConfig: router,
       debugShowCheckedModeBanner: false,
+      themeMode: ThemeMode.light,
+      theme: AppTheme.light.copyWith(
+        textTheme: AppTheme.light.textTheme.apply(
+          fontSizeFactor: 1.1,
+        ),
+      ),
+      routerConfig: router,
     );
   }
 }
