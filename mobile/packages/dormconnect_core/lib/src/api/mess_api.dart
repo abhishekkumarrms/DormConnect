@@ -33,4 +33,17 @@ class MessApi {
     });
     return resp.data as Map<String, dynamic>;
   }
+
+  Future<MessMenu> postMenu(Map<String, dynamic> data) async {
+    final resp = await _client.post('/api/v1/mess/menu', data: data);
+    return MessMenu.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<List<MessOff>> getMessOffs(String hostelId) async {
+    final resp = await _client.get('/api/v1/mess/mess-off',
+        params: {'hostel_id': hostelId});
+    return (resp.data as List<dynamic>)
+        .map((e) => MessOff.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
 }

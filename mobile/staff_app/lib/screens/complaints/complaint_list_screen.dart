@@ -57,7 +57,7 @@ class _ComplaintCardState extends State<_ComplaintCard> {
     try {
       await widget.ref
           .read(complaintApiProvider)
-          .action(widget.c.id, action, {});
+          .updateAction(widget.c.id, action, {});
       widget.ref.invalidate(_staffComplaintsProvider);
       if (mounted) DcSnackbar.success(context, 'Updated');
     } catch (e) {

@@ -20,4 +20,26 @@ class BroadcastApi {
         .map((e) => Notice.fromJson(e as Map<String, dynamic>))
         .toList();
   }
+
+  Future<Broadcast> create(Map<String, dynamic> data) async {
+    final resp =
+        await _client.post('/api/v1/comms/broadcasts', data: data);
+    return Broadcast.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<Notice> createNotice(Map<String, dynamic> data) async {
+    final resp =
+        await _client.post('/api/v1/comms/notices', data: data);
+    return Notice.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<Notice> togglePin(String id) async {
+    final resp =
+        await _client.post('/api/v1/comms/notices/$id/pin');
+    return Notice.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<void> deleteNotice(String id) async {
+    await _client.delete('/api/v1/comms/notices/$id');
+  }
 }
