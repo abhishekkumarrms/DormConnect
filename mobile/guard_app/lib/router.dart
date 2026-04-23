@@ -1,12 +1,13 @@
+import 'package:dormconnect_core/dormconnect_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dormconnect_core/dormconnect_core.dart';
-import 'screens/auth/guard_login_screen.dart';
-import 'screens/gate/live_requests_screen.dart';
-import 'screens/gate/live_out_screen.dart';
-import 'screens/visitors/visitor_screen.dart';
-import 'screens/history/movement_history_screen.dart';
-import 'screens/shell_screen.dart';
+
+import 'providers/gate_provider.dart';
+import 'screens/login_screen.dart';
+import 'screens/gate_screen.dart';
+import 'screens/confirm_screen.dart';
+import 'screens/manual_entry_screen.dart';
+import 'screens/shift_log_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final auth = ref.watch(authProvider);
@@ -20,15 +21,26 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      GoRoute(path: '/login', builder: (_, __) => const GuardLoginScreen()),
-      ShellRoute(
-        builder: (context, state, child) => ShellScreen(child: child),
-        routes: [
-          GoRoute(path: '/gate', builder: (_, __) => const LiveRequestsScreen()),
-          GoRoute(path: '/out', builder: (_, __) => const LiveOutScreen()),
-          GoRoute(path: '/visitors', builder: (_, __) => const VisitorScreen()),
-          GoRoute(path: '/history', builder: (_, __) => const MovementHistoryScreen()),
-        ],
+      GoRoute(
+        path: '/login',
+        builder: (_, __) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/gate',
+        builder: (_, __) => const GateScreen(),
+      ),
+      GoRoute(
+        path: '/confirm',
+        builder: (_, state) => ConfirmScreen(
+            request: state.extra as PendingRequest),
+      ),
+      GoRoute(
+        path: '/manual',
+        builder: (_, __) => const ManualEntryScreen(),
+      ),
+      GoRoute(
+        path: '/shift-log',
+        builder: (_, __) => const ShiftLogScreen(),
       ),
     ],
   );
