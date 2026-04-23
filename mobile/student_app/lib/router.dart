@@ -1,61 +1,94 @@
+import 'package:dormconnect_core/dormconnect_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dormconnect_core/dormconnect_core.dart';
-import 'screens/auth/phone_screen.dart';
-import 'screens/auth/otp_screen.dart';
-import 'screens/auth/enroll_screen.dart';
-import 'screens/home_screen.dart';
-import 'screens/gate/gate_otp_screen.dart';
-import 'screens/leave/leave_list_screen.dart';
-import 'screens/leave/leave_apply_screen.dart';
-import 'screens/complaint/complaint_list_screen.dart';
-import 'screens/complaint/complaint_create_screen.dart';
-import 'screens/mess/mess_screen.dart';
-import 'screens/sos/sos_screen.dart';
-import 'screens/profile/profile_screen.dart';
+import 'features/auth/screens/splash_screen.dart';
+import 'features/auth/screens/phone_input_screen.dart';
+import 'features/auth/screens/otp_verify_screen.dart';
+import 'features/auth/screens/enrollment_screen.dart';
+import 'features/auth/screens/pending_approval_screen.dart';
+import 'features/home/screens/home_screen.dart';
+import 'features/home/screens/dashboard_tab.dart';
+import 'features/gate/screens/gate_tab.dart';
+import 'features/gate/screens/movement_history_screen.dart';
+import 'features/complaints/screens/activity_tab.dart';
+import 'features/complaints/screens/new_complaint_screen.dart';
+import 'features/complaints/screens/complaint_detail_screen.dart';
+import 'features/complaints/screens/new_maintenance_screen.dart';
+import 'features/complaints/screens/maintenance_detail_screen.dart';
+import 'features/leave/screens/leaves_screen.dart';
+import 'features/leave/screens/new_leave_screen.dart';
+import 'features/leave/screens/leave_detail_screen.dart';
+import 'features/mess/screens/mess_screen.dart';
+import 'features/visitors/screens/new_visitor_screen.dart';
+import 'features/broadcasts/screens/broadcasts_screen.dart';
+import 'features/broadcasts/screens/notices_screen.dart';
+import 'features/profile/screens/profile_tab.dart';
+import 'features/sos/screens/sos_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final auth = ref.watch(authProvider);
+  final authState = ref.watch(authProvider);
+
   return GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/splash',
     redirect: (context, state) {
-      final isAuth = auth.isAuthenticated;
-      final isLoginRoute = state.matchedLocation.startsWith('/login') ||
-          state.matchedLocation.startsWith('/otp') ||
-          state.matchedLocation.startsWith('/enroll');
-      if (!isAuth && !isLoginRoute) return '/login';
-      if (isAuth && isLoginRoute) return '/home';
+      final loc = state.matchedLocation;
+      if (loc == '/splash') return null;
+
+      final isLoading = authState.isLoading;
+      if (isLoading) return null;
+
+      final isAuth = authState.isAuthenticated;
+      final authRoutes = ['/auth/phone', '/auth/otp', '/auth/enroll', '/auth/pending'];
+      final onAuthRoute = authRoutes.any((p) => loc.startsWith(p));
+
+      if (!isAuth && !onAuthRoute) return '/auth/phone';
+      if (isAuth && onAuthRoute) return '/home/dashboard';
       return null;
     },
     routes: [
-      GoRoute(path: '/login', builder: (_, __) => const PhoneScreen()),
+      GoRoute(path: '/splash', builder: (_, __) => const SplashScreen()),
+      GoRoute(path: '/auth/phone', builder: (_, __) => const PhoneInputScreen()),
       GoRoute(
-          path: '/otp',
-          builder: (_, state) =>
-              OtpScreen(phone: state.extra as String)),
-      GoRoute(path: '/enroll', builder: (_, __) => const EnrollScreen()),
+        path: '/auth/otp',
+        builder: (_, state) => OtpVerifyScreen(
+          phone: state.uri.queryParameters['phone'] ?? '',
+        ),
+      ),
+      GoRoute(path: '/auth/enroll', builder: (_, __) => const EnrollmentScreen()),
+      GoRoute(path: '/auth/pending', builder: (_, __) => const PendingApprovalScreen()),
+
       ShellRoute(
         builder: (context, state, child) => HomeScreen(child: child),
         routes: [
-          GoRoute(path: '/home', builder: (_, __) => const GateOtpScreen()),
-          GoRoute(path: '/gate', builder: (_, __) => const GateOtpScreen()),
-          GoRoute(
-              path: '/leaves', builder: (_, __) => const LeaveListScreen()),
-          GoRoute(
-              path: '/leaves/apply',
-              builder: (_, __) => const LeaveApplyScreen()),
-          GoRoute(
-              path: '/complaints',
-              builder: (_, __) => const ComplaintListScreen()),
-          GoRoute(
-              path: '/complaints/create',
-              builder: (_, __) => const ComplaintCreateScreen()),
-          GoRoute(path: '/mess', builder: (_, __) => const MessScreen()),
-          GoRoute(path: '/sos', builder: (_, __) => const SosScreen()),
-          GoRoute(
-              path: '/profile', builder: (_, __) => const ProfileScreen()),
+          GoRoute(path: '/home/dashboard', builder: (_, __) => const DashboardTab()),
+          GoRoute(path: '/home/gate', builder: (_, __) => const GateTab()),
+          GoRoute(path: '/home/activity', builder: (_, __) => const ActivityTab()),
+          GoRoute(path: '/home/profile', builder: (_, __) => const ProfileTab()),
         ],
       ),
+
+      GoRoute(path: '/leave', builder: (_, __) => const LeavesScreen()),
+      GoRoute(path: '/leave/new', builder: (_, __) => const NewLeaveScreen()),
+      GoRoute(
+        path: '/leave/:id',
+        builder: (_, state) => LeaveDetailScreen(leaveId: state.pathParameters['id']!),
+      ),
+      GoRoute(path: '/complaint/new', builder: (_, __) => const NewComplaintScreen()),
+      GoRoute(
+        path: '/complaint/:id',
+        builder: (_, state) => ComplaintDetailScreen(complaintId: state.pathParameters['id']!),
+      ),
+      GoRoute(path: '/maintenance/new', builder: (_, __) => const NewMaintenanceScreen()),
+      GoRoute(
+        path: '/maintenance/:id',
+        builder: (_, state) => MaintenanceDetailScreen(requestId: state.pathParameters['id']!),
+      ),
+      GoRoute(path: '/gate/history', builder: (_, __) => const MovementHistoryScreen()),
+      GoRoute(path: '/mess', builder: (_, __) => const MessScreen()),
+      GoRoute(path: '/visitor/new', builder: (_, __) => const NewVisitorScreen()),
+      GoRoute(path: '/broadcasts', builder: (_, __) => const BroadcastsScreen()),
+      GoRoute(path: '/notices', builder: (_, __) => const NoticesScreen()),
+      GoRoute(path: '/sos', builder: (_, __) => const SosScreen()),
     ],
   );
 });

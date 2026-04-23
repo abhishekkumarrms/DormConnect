@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'api_client.dart';
 import '../models/complaint.dart';
 
@@ -7,6 +8,16 @@ class ComplaintApi {
 
   Future<Complaint> create(Map<String, dynamic> data) async {
     final resp = await _client.post('/api/v1/complaints', data: data);
+    return Complaint.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<Complaint> createWithPhoto(FormData formData) async {
+    final resp = await _client.postMultipart('/api/v1/complaints', formData);
+    return Complaint.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<Complaint> getById(String id) async {
+    final resp = await _client.get('/api/v1/complaints/$id');
     return Complaint.fromJson(resp.data as Map<String, dynamic>);
   }
 
@@ -27,12 +38,7 @@ class ComplaintApi {
         .toList();
   }
 
-  Future<Complaint> getById(String id) async {
-    final resp = await _client.get('/api/v1/complaints/$id');
-    return Complaint.fromJson(resp.data as Map<String, dynamic>);
-  }
-
-  Future<Complaint> action(String id, String action, Map<String, dynamic> data) async {
+  Future<Complaint> updateAction(String id, String action, Map<String, dynamic> data) async {
     final resp = await _client.post('/api/v1/complaints/$id/$action', data: data);
     return Complaint.fromJson(resp.data as Map<String, dynamic>);
   }
