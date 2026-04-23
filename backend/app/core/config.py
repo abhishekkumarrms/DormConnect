@@ -1,5 +1,4 @@
 from pydantic_settings import BaseSettings
-from pydantic import field_validator
 from typing import Optional
 
 
@@ -14,9 +13,16 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: Optional[str] = None
     CLOUDINARY_API_SECRET: Optional[str] = None
     FCM_CREDENTIALS_PATH: Optional[str] = None
+    # Base64-encoded Firebase service account JSON — use this on Railway instead of a file
+    FCM_CREDENTIALS_JSON: Optional[str] = None
     SMS_API_KEY: Optional[str] = None
     SMS_SENDER_ID: str = "DRMCNT"
     ENVIRONMENT: str = "development"
+    # Comma-separated allowed CORS origins for production
+    # e.g. "https://myapp.railway.app,https://myapp.com"
+    ALLOWED_ORIGINS: str = ""
+    # Railway injects $PORT — default 8000 for local dev
+    PORT: int = 8000
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

@@ -16,7 +16,13 @@ async def send_fcm(user_ids: list[str], title: str, body: str, data: Optional[di
 
         if not firebase_admin._apps:
             import firebase_admin.credentials as cred
-            firebase_admin.initialize_app(cred.Certificate(settings.FCM_CREDENTIALS_PATH))
+            import json, base64
+            if settings.FCM_CREDENTIALS_JSON:
+                # Railway: set FCM_CREDENTIALS_JSON to base64-encoded service account JSON
+                creds_dict = json.loads(base64.b64decode(settings.FCM_CREDENTIALS_JSON))
+                firebase_admin.initialize_app(cred.Certificate(creds_dict))
+            elif settings.FCM_CREDENTIALS_PATH:
+                firebase_admin.initialize_app(cred.Certificate(settings.FCM_CREDENTIALS_PATH))
 
         # Fetch FCM tokens for user_ids from DB — placeholder
         # In real impl: query users table for fcm_token where id in user_ids
