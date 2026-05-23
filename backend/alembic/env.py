@@ -28,6 +28,11 @@ load_dotenv()
 
 database_url = os.environ.get("DATABASE_URL", config.get_main_option("sqlalchemy.url"))
 if database_url:
+    # Render/Heroku give postgres:// or postgresql:// — asyncpg needs postgresql+asyncpg://
+    if database_url.startswith("postgres://"):
+        database_url = "postgresql+asyncpg://" + database_url[len("postgres://"):]
+    elif database_url.startswith("postgresql://"):
+        database_url = "postgresql+asyncpg://" + database_url[len("postgresql://"):]
     config.set_main_option("sqlalchemy.url", database_url)
 
 
