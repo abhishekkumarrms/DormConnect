@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     FCM_CREDENTIALS_JSON: Optional[str] = None
     SMS_API_KEY: Optional[str] = None
     SMS_SENDER_ID: str = "DRMCNT"
+    SEED_SECRET: Optional[str] = None
     ENVIRONMENT: str = "development"
     # Comma-separated allowed CORS origins for production
     # e.g. "https://myapp.railway.app,https://myapp.com"

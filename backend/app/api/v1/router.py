@@ -2,11 +2,12 @@ from fastapi import APIRouter
 from app.api.v1 import (
     auth, students, gate, complaints, maintenance,
     leaves, visitors, mess, sos,
-    communications, shifts, analytics, audit,
+    communications, shifts, analytics, audit, admin,
 )
 from app.core.config import settings
 
 api_router = APIRouter()
+api_router.include_router(admin.router)
 api_router.include_router(auth.router)
 api_router.include_router(students.router)
 api_router.include_router(gate.router)
