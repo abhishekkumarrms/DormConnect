@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'api_client.dart';
 import '../models/student.dart';
 
@@ -28,9 +27,9 @@ class StudentApi {
         .toList();
   }
 
-  Future<Student> enroll(FormData formData) async {
-    final resp = await _client.postMultipart('/api/v1/students/enroll', formData);
-    return Student.fromJson(resp.data as Map<String, dynamic>);
+  Future<Map<String, dynamic>> enroll(Map<String, dynamic> data) async {
+    final resp = await _client.post('/api/v1/students/enroll', data: data);
+    return resp.data as Map<String, dynamic>;
   }
 
   Future<Student> getById(String id) async {

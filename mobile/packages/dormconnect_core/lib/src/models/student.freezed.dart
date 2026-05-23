@@ -30,11 +30,11 @@ mixin _$Student {
   String? get hostelName => throw _privateConstructorUsedError;
   String? get guardianName => throw _privateConstructorUsedError;
   String? get guardianPhone => throw _privateConstructorUsedError;
+  String? get guardianRelation => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   String? get profilePhoto => throw _privateConstructorUsedError;
   String? get course => throw _privateConstructorUsedError;
   int? get year => throw _privateConstructorUsedError;
-  String? get feeReceiptUrl => throw _privateConstructorUsedError;
   EnrollmentStatus get enrollmentStatus => throw _privateConstructorUsedError;
   StudentStatus get currentStatus => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
@@ -60,11 +60,11 @@ abstract class $StudentCopyWith<$Res> {
       String? hostelName,
       String? guardianName,
       String? guardianPhone,
+      String? guardianRelation,
       String? email,
       String? profilePhoto,
       String? course,
       int? year,
-      String? feeReceiptUrl,
       EnrollmentStatus enrollmentStatus,
       StudentStatus currentStatus,
       DateTime? createdAt});
@@ -93,11 +93,11 @@ class _$StudentCopyWithImpl<$Res, $Val extends Student>
     Object? hostelName = freezed,
     Object? guardianName = freezed,
     Object? guardianPhone = freezed,
+    Object? guardianRelation = freezed,
     Object? email = freezed,
     Object? profilePhoto = freezed,
     Object? course = freezed,
     Object? year = freezed,
-    Object? feeReceiptUrl = freezed,
     Object? enrollmentStatus = null,
     Object? currentStatus = null,
     Object? createdAt = freezed,
@@ -143,6 +143,10 @@ class _$StudentCopyWithImpl<$Res, $Val extends Student>
           ? _value.guardianPhone
           : guardianPhone // ignore: cast_nullable_to_non_nullable
               as String?,
+      guardianRelation: freezed == guardianRelation
+          ? _value.guardianRelation
+          : guardianRelation // ignore: cast_nullable_to_non_nullable
+              as String?,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -159,10 +163,6 @@ class _$StudentCopyWithImpl<$Res, $Val extends Student>
           ? _value.year
           : year // ignore: cast_nullable_to_non_nullable
               as int?,
-      feeReceiptUrl: freezed == feeReceiptUrl
-          ? _value.feeReceiptUrl
-          : feeReceiptUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
       enrollmentStatus: null == enrollmentStatus
           ? _value.enrollmentStatus
           : enrollmentStatus // ignore: cast_nullable_to_non_nullable
@@ -197,11 +197,11 @@ abstract class _$$StudentImplCopyWith<$Res> implements $StudentCopyWith<$Res> {
       String? hostelName,
       String? guardianName,
       String? guardianPhone,
+      String? guardianRelation,
       String? email,
       String? profilePhoto,
       String? course,
       int? year,
-      String? feeReceiptUrl,
       EnrollmentStatus enrollmentStatus,
       StudentStatus currentStatus,
       DateTime? createdAt});
@@ -228,11 +228,11 @@ class __$$StudentImplCopyWithImpl<$Res>
     Object? hostelName = freezed,
     Object? guardianName = freezed,
     Object? guardianPhone = freezed,
+    Object? guardianRelation = freezed,
     Object? email = freezed,
     Object? profilePhoto = freezed,
     Object? course = freezed,
     Object? year = freezed,
-    Object? feeReceiptUrl = freezed,
     Object? enrollmentStatus = null,
     Object? currentStatus = null,
     Object? createdAt = freezed,
@@ -278,6 +278,10 @@ class __$$StudentImplCopyWithImpl<$Res>
           ? _value.guardianPhone
           : guardianPhone // ignore: cast_nullable_to_non_nullable
               as String?,
+      guardianRelation: freezed == guardianRelation
+          ? _value.guardianRelation
+          : guardianRelation // ignore: cast_nullable_to_non_nullable
+              as String?,
       email: freezed == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -294,10 +298,6 @@ class __$$StudentImplCopyWithImpl<$Res>
           ? _value.year
           : year // ignore: cast_nullable_to_non_nullable
               as int?,
-      feeReceiptUrl: freezed == feeReceiptUrl
-          ? _value.feeReceiptUrl
-          : feeReceiptUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
       enrollmentStatus: null == enrollmentStatus
           ? _value.enrollmentStatus
           : enrollmentStatus // ignore: cast_nullable_to_non_nullable
@@ -328,11 +328,11 @@ class _$StudentImpl implements _Student {
       this.hostelName,
       this.guardianName,
       this.guardianPhone,
+      this.guardianRelation,
       this.email,
       this.profilePhoto,
       this.course,
       this.year,
-      this.feeReceiptUrl,
       this.enrollmentStatus = EnrollmentStatus.pending,
       this.currentStatus = StudentStatus.inHostel,
       this.createdAt});
@@ -361,6 +361,8 @@ class _$StudentImpl implements _Student {
   @override
   final String? guardianPhone;
   @override
+  final String? guardianRelation;
+  @override
   final String? email;
   @override
   final String? profilePhoto;
@@ -368,8 +370,6 @@ class _$StudentImpl implements _Student {
   final String? course;
   @override
   final int? year;
-  @override
-  final String? feeReceiptUrl;
   @override
   @JsonKey()
   final EnrollmentStatus enrollmentStatus;
@@ -381,7 +381,7 @@ class _$StudentImpl implements _Student {
 
   @override
   String toString() {
-    return 'Student(id: $id, userId: $userId, name: $name, phone: $phone, rollNumber: $rollNumber, roomNumber: $roomNumber, hostelId: $hostelId, hostelName: $hostelName, guardianName: $guardianName, guardianPhone: $guardianPhone, email: $email, profilePhoto: $profilePhoto, course: $course, year: $year, feeReceiptUrl: $feeReceiptUrl, enrollmentStatus: $enrollmentStatus, currentStatus: $currentStatus, createdAt: $createdAt)';
+    return 'Student(id: $id, userId: $userId, name: $name, phone: $phone, rollNumber: $rollNumber, roomNumber: $roomNumber, hostelId: $hostelId, hostelName: $hostelName, guardianName: $guardianName, guardianPhone: $guardianPhone, guardianRelation: $guardianRelation, email: $email, profilePhoto: $profilePhoto, course: $course, year: $year, enrollmentStatus: $enrollmentStatus, currentStatus: $currentStatus, createdAt: $createdAt)';
   }
 
   @override
@@ -405,6 +405,8 @@ class _$StudentImpl implements _Student {
                 other.guardianName == guardianName) &&
             (identical(other.guardianPhone, guardianPhone) ||
                 other.guardianPhone == guardianPhone) &&
+            (identical(other.guardianRelation, guardianRelation) ||
+                other.guardianRelation == guardianRelation) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.profilePhoto, profilePhoto) ||
                 other.profilePhoto == profilePhoto) &&
@@ -434,11 +436,11 @@ class _$StudentImpl implements _Student {
       hostelName,
       guardianName,
       guardianPhone,
+      guardianRelation,
       email,
       profilePhoto,
       course,
       year,
-      feeReceiptUrl,
       enrollmentStatus,
       currentStatus,
       createdAt);
@@ -469,11 +471,11 @@ abstract class _Student implements Student {
       final String? hostelName,
       final String? guardianName,
       final String? guardianPhone,
+      final String? guardianRelation,
       final String? email,
       final String? profilePhoto,
       final String? course,
       final int? year,
-      final String? feeReceiptUrl,
       final EnrollmentStatus enrollmentStatus,
       final StudentStatus currentStatus,
       final DateTime? createdAt}) = _$StudentImpl;
@@ -501,6 +503,8 @@ abstract class _Student implements Student {
   @override
   String? get guardianPhone;
   @override
+  String? get guardianRelation;
+  @override
   String? get email;
   @override
   String? get profilePhoto;
@@ -508,8 +512,6 @@ abstract class _Student implements Student {
   String? get course;
   @override
   int? get year;
-  @override
-  String? get feeReceiptUrl;
   @override
   EnrollmentStatus get enrollmentStatus;
   @override

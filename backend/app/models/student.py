@@ -28,10 +28,12 @@ class Student(Base, TimestampMixin):
     room_number: Mapped[str] = mapped_column(String(50), nullable=False)
     hostel_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("hostels.id"), nullable=False)
     guardian_user_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("users.id"), nullable=True)
+    guardian_name: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    guardian_phone: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    guardian_relation: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     enrollment_status: Mapped[EnrollmentStatus] = mapped_column(
         SAEnum(EnrollmentStatus), default=EnrollmentStatus.PENDING, nullable=False
     )
-    fee_receipt_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     permanent_checkout_date: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
     current_status: Mapped[StudentStatus] = mapped_column(
         SAEnum(StudentStatus), default=StudentStatus.IN, nullable=False

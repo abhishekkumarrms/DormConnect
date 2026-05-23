@@ -10,23 +10,27 @@ enum StudentStatus { inHostel, outHostel }
 class Student with _$Student {
   const factory Student({
     required String id,
-    required String userId,
+    @JsonKey(name: 'user_id') required String userId,
     required String name,
     required String phone,
-    required String rollNumber,
-    String? roomNumber,
-    required String hostelId,
-    String? hostelName,
-    String? guardianName,
-    String? guardianPhone,
+    @JsonKey(name: 'roll_number') required String rollNumber,
+    @JsonKey(name: 'room_number') String? roomNumber,
+    @JsonKey(name: 'hostel_id') required String hostelId,
+    @JsonKey(name: 'hostel_name') String? hostelName,
+    @JsonKey(name: 'guardian_name') String? guardianName,
+    @JsonKey(name: 'guardian_phone') String? guardianPhone,
+    @JsonKey(name: 'guardian_relation') String? guardianRelation,
     String? email,
-    String? profilePhoto,
+    @JsonKey(name: 'profile_photo') String? profilePhoto,
     String? course,
     int? year,
-    String? feeReceiptUrl,
-    @Default(EnrollmentStatus.pending) EnrollmentStatus enrollmentStatus,
-    @Default(StudentStatus.inHostel) StudentStatus currentStatus,
-    DateTime? createdAt,
+    @JsonKey(name: 'enrollment_status')
+    @Default(EnrollmentStatus.pending)
+    EnrollmentStatus enrollmentStatus,
+    @JsonKey(name: 'current_status')
+    @Default(StudentStatus.inHostel)
+    StudentStatus currentStatus,
+    @JsonKey(name: 'created_at') DateTime? createdAt,
   }) = _Student;
 
   factory Student.fromJson(Map<String, dynamic> json) =>

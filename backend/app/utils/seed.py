@@ -191,8 +191,10 @@ async def seed(db: AsyncSession) -> None:
             room_number=room,
             hostel_id=hostel.id,
             guardian_user_id=guardian.id,
+            guardian_name=guardian.name,
+            guardian_phone=guardian.phone,
+            guardian_relation="Parent",
             enrollment_status=EnrollmentStatus.ACTIVE,
-            fee_receipt_url="https://res.cloudinary.com/demo/image/upload/sample.pdf",
             current_status=StudentStatus.IN,
         )
         db.add(st)

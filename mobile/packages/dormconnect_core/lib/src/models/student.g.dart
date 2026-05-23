@@ -9,61 +9,61 @@ part of 'student.dart';
 _$StudentImpl _$$StudentImplFromJson(Map<String, dynamic> json) =>
     _$StudentImpl(
       id: json['id'] as String,
-      userId: json['userId'] as String,
+      userId: json['user_id'] as String,
       name: json['name'] as String,
       phone: json['phone'] as String,
-      rollNumber: json['rollNumber'] as String,
-      roomNumber: json['roomNumber'] as String?,
-      hostelId: json['hostelId'] as String,
-      hostelName: json['hostelName'] as String?,
-      guardianName: json['guardianName'] as String?,
-      guardianPhone: json['guardianPhone'] as String?,
+      rollNumber: json['roll_number'] as String,
+      roomNumber: json['room_number'] as String?,
+      hostelId: json['hostel_id'] as String,
+      hostelName: json['hostel_name'] as String?,
+      guardianName: json['guardian_name'] as String?,
+      guardianPhone: json['guardian_phone'] as String?,
+      guardianRelation: json['guardian_relation'] as String?,
       email: json['email'] as String?,
-      profilePhoto: json['profilePhoto'] as String?,
+      profilePhoto: json['profile_photo'] as String?,
       course: json['course'] as String?,
       year: (json['year'] as num?)?.toInt(),
-      feeReceiptUrl: json['feeReceiptUrl'] as String?,
       enrollmentStatus: $enumDecodeNullable(
-              _$EnrollmentStatusEnumMap, json['enrollmentStatus']) ??
+              _$EnrollmentStatusEnumMap, json['enrollment_status']) ??
           EnrollmentStatus.pending,
       currentStatus:
-          $enumDecodeNullable(_$StudentStatusEnumMap, json['currentStatus']) ??
+          $enumDecodeNullable(_$StudentStatusEnumMap, json['current_status']) ??
               StudentStatus.inHostel,
-      createdAt: json['createdAt'] == null
+      createdAt: json['created_at'] == null
           ? null
-          : DateTime.parse(json['createdAt'] as String),
+          : DateTime.parse(json['created_at'] as String),
     );
 
 Map<String, dynamic> _$$StudentImplToJson(_$StudentImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'userId': instance.userId,
+      'user_id': instance.userId,
       'name': instance.name,
       'phone': instance.phone,
-      'rollNumber': instance.rollNumber,
-      'roomNumber': instance.roomNumber,
-      'hostelId': instance.hostelId,
-      'hostelName': instance.hostelName,
-      'guardianName': instance.guardianName,
-      'guardianPhone': instance.guardianPhone,
+      'roll_number': instance.rollNumber,
+      'room_number': instance.roomNumber,
+      'hostel_id': instance.hostelId,
+      'hostel_name': instance.hostelName,
+      'guardian_name': instance.guardianName,
+      'guardian_phone': instance.guardianPhone,
+      'guardian_relation': instance.guardianRelation,
       'email': instance.email,
-      'profilePhoto': instance.profilePhoto,
+      'profile_photo': instance.profilePhoto,
       'course': instance.course,
       'year': instance.year,
-      'feeReceiptUrl': instance.feeReceiptUrl,
-      'enrollmentStatus': _$EnrollmentStatusEnumMap[instance.enrollmentStatus]!,
-      'currentStatus': _$StudentStatusEnumMap[instance.currentStatus]!,
-      'createdAt': instance.createdAt?.toIso8601String(),
+      'enrollment_status': _$EnrollmentStatusEnumMap[instance.enrollmentStatus]!,
+      'current_status': _$StudentStatusEnumMap[instance.currentStatus]!,
+      'created_at': instance.createdAt?.toIso8601String(),
     };
 
 const _$EnrollmentStatusEnumMap = {
-  EnrollmentStatus.pending: 'pending',
-  EnrollmentStatus.active: 'active',
-  EnrollmentStatus.inactive: 'inactive',
-  EnrollmentStatus.checkedOut: 'checkedOut',
+  EnrollmentStatus.pending: 'PENDING',
+  EnrollmentStatus.active: 'ACTIVE',
+  EnrollmentStatus.inactive: 'INACTIVE',
+  EnrollmentStatus.checkedOut: 'CHECKED_OUT',
 };
 
 const _$StudentStatusEnumMap = {
-  StudentStatus.inHostel: 'inHostel',
-  StudentStatus.outHostel: 'outHostel',
+  StudentStatus.inHostel: 'IN',
+  StudentStatus.outHostel: 'OUT',
 };
