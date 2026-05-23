@@ -33,6 +33,11 @@ class StudentApi {
     return Student.fromJson(resp.data as Map<String, dynamic>);
   }
 
+  Future<Student> getById(String id) async {
+    final resp = await _client.get('/api/v1/students/$id');
+    return Student.fromJson(resp.data as Map<String, dynamic>);
+  }
+
   Future<Student> approve(String id) async {
     final resp = await _client.post('/api/v1/students/$id/approve');
     return Student.fromJson(resp.data as Map<String, dynamic>);

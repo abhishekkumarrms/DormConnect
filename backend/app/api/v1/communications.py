@@ -23,6 +23,16 @@ async def send_broadcast(
     return await broadcast_service.send_broadcast(current_user, body, db)
 
 
+@router.get("/broadcasts", response_model=list[BroadcastResponse])
+async def list_my_broadcasts(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles(*ALL_AUTH)),
+):
+    if not current_user.hostel_id:
+        return []
+    return await broadcast_service.get_broadcasts(current_user.hostel_id, db)
+
+
 @router.get("/broadcasts/{hostel_id}", response_model=list[BroadcastResponse])
 async def list_broadcasts(
     hostel_id: uuid.UUID,
@@ -39,6 +49,16 @@ async def create_notice(
     current_user: User = Depends(require_roles(*CARETAKER_PLUS)),
 ):
     return await broadcast_service.create_notice(current_user, body, db)
+
+
+@router.get("/notices", response_model=list[NoticeResponse])
+async def list_my_notices(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles(*ALL_AUTH)),
+):
+    if not current_user.hostel_id:
+        return []
+    return await broadcast_service.get_notices(current_user.hostel_id, db)
 
 
 @router.get("/notices/{hostel_id}", response_model=list[NoticeResponse])

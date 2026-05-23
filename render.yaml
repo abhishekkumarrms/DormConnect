@@ -1,0 +1,55 @@
+services:
+  - type: web
+    name: dormconnect-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: dormconnect-db
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: dormconnect-redis
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENVIRONMENT
+        value: production
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 60
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: 30
+      - key: SMS_SENDER_ID
+        value: DRMCNT
+      # Set these manually in Render dashboard after deploy:
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: FCM_CREDENTIALS_JSON
+        sync: false
+      - key: SMS_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+
+  - type: redis
+    name: dormconnect-redis
+    plan: free
+    ipAllowList: []
+
+databases:
+  - name: dormconnect-db
+    plan: free
+    databaseName: dormconnect
+    user: dormconnect

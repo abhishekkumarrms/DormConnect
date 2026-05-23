@@ -14,7 +14,7 @@ if settings.ENVIRONMENT == "production":
     }
 
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    settings.async_database_url,
     echo=settings.ENVIRONMENT == "development",
     **_pool_kwargs,
 )

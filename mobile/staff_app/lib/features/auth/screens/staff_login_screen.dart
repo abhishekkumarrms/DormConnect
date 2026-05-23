@@ -28,7 +28,7 @@ class _StaffLoginScreenState extends ConsumerState<StaffLoginScreen> {
     final ok = await ref
         .read(authProvider.notifier)
         .staffLogin(_emailCtrl.text.trim(), _passCtrl.text);
-    if (ok && mounted) context.go('/home/dashboard');
+    // router redirect handles navigation on auth state change
   }
 
   @override

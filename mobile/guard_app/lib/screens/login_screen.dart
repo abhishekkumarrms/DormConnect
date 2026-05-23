@@ -26,6 +26,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _pinAppend(String digit) {
+    FocusScope.of(context).unfocus();
     if (_pin.length >= 4) return;
     setState(() => _pin.add(digit));
     if (_pin.length == 4) _tryLogin();

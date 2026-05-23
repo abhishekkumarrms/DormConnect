@@ -4,6 +4,16 @@ from typing import Optional
 
 class Settings(BaseSettings):
     DATABASE_URL: str
+
+    @property
+    def async_database_url(self) -> str:
+        url = self.DATABASE_URL
+        # Render/Heroku give postgres:// or postgresql:// — asyncpg needs postgresql+asyncpg://
+        if url.startswith("postgres://"):
+            url = "postgresql+asyncpg://" + url[len("postgres://"):]
+        elif url.startswith("postgresql://"):
+            url = "postgresql+asyncpg://" + url[len("postgresql://"):]
+        return url
     REDIS_URL: str = "redis://localhost:6379"
     SECRET_KEY: str
     ALGORITHM: str = "HS256"

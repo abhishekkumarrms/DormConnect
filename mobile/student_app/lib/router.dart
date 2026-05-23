@@ -1,4 +1,5 @@
 import 'package:dormconnect_core/dormconnect_core.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'features/auth/screens/splash_screen.dart';
@@ -25,26 +26,35 @@ import 'features/broadcasts/screens/notices_screen.dart';
 import 'features/profile/screens/profile_tab.dart';
 import 'features/sos/screens/sos_screen.dart';
 
+class _RouterNotifier extends ChangeNotifier {
+  final Ref _ref;
+  _RouterNotifier(this._ref) {
+    _ref.listen<AuthState>(authProvider, (_, __) => notifyListeners());
+  }
+
+  String? redirect(BuildContext context, GoRouterState state) {
+    final auth = _ref.read(authProvider);
+    final loc = state.matchedLocation;
+    if (loc == '/splash') return null;
+    if (auth.isLoading) return null;
+
+    final isAuth = auth.isAuthenticated;
+    const authRoutes = ['/auth/phone', '/auth/otp', '/auth/enroll', '/auth/pending'];
+    final onAuthRoute = authRoutes.any((p) => loc.startsWith(p));
+
+    if (!isAuth && !onAuthRoute) return '/auth/phone';
+    if (isAuth && onAuthRoute) return '/home/dashboard';
+    return null;
+  }
+}
+
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
+  final notifier = _RouterNotifier(ref);
 
   return GoRouter(
     initialLocation: '/splash',
-    redirect: (context, state) {
-      final loc = state.matchedLocation;
-      if (loc == '/splash') return null;
-
-      final isLoading = authState.isLoading;
-      if (isLoading) return null;
-
-      final isAuth = authState.isAuthenticated;
-      final authRoutes = ['/auth/phone', '/auth/otp', '/auth/enroll', '/auth/pending'];
-      final onAuthRoute = authRoutes.any((p) => loc.startsWith(p));
-
-      if (!isAuth && !onAuthRoute) return '/auth/phone';
-      if (isAuth && onAuthRoute) return '/home/dashboard';
-      return null;
-    },
+    refreshListenable: notifier,
+    redirect: notifier.redirect,
     routes: [
       GoRoute(path: '/splash', builder: (_, __) => const SplashScreen()),
       GoRoute(path: '/auth/phone', builder: (_, __) => const PhoneInputScreen()),

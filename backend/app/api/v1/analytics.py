@@ -1,5 +1,6 @@
 import uuid
-from fastapi import APIRouter, Depends
+from typing import Optional
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -12,6 +13,19 @@ router = APIRouter(prefix="/analytics", tags=["analytics"])
 
 SENIOR = (Role.ASST_CHIEF_WARDEN, Role.CHIEF_WARDEN)
 WARDEN_PLUS = (Role.WARDEN, Role.ASST_WARDEN, Role.ASST_CHIEF_WARDEN, Role.CHIEF_WARDEN)
+
+
+@router.get("/overview", response_model=InstitutionOverview)
+async def institution_overview_query(
+    institution_id: Optional[uuid.UUID] = Query(None),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles(*WARDEN_PLUS)),
+):
+    iid = institution_id or current_user.institution_id
+    if not iid:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=400, detail="institution_id required")
+    return await analytics_service.get_institution_overview(iid, db)
 
 
 @router.get("/institution/{institution_id}", response_model=InstitutionOverview)

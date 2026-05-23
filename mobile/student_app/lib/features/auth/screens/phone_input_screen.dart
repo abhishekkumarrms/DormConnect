@@ -37,6 +37,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
   Widget build(BuildContext context) {
     final auth = ref.watch(authProvider);
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
@@ -46,7 +47,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
           ),
         ),
         child: SafeArea(
-          child: Padding(
+          child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
@@ -94,12 +95,14 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                         TextFormField(
                           controller: _phoneCtrl,
                           keyboardType: TextInputType.phone,
+                          style: const TextStyle(color: Colors.black87),
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
                             LengthLimitingTextInputFormatter(10),
                           ],
                           decoration: InputDecoration(
                             labelText: 'Phone Number',
+                            labelStyle: const TextStyle(color: Colors.black54),
                             prefixText: '+91 ',
                             prefixStyle: const TextStyle(
                                 color: AppColors.primary,
@@ -143,6 +146,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                     ),
                   ),
                 ),
+                const SizedBox(height: 24),
               ],
             ),
           ),

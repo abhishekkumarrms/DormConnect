@@ -59,7 +59,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final data =
           await _ref.read(authApiProvider).verifyOtp(phone, otp, deviceId);
       await _saveTokens(data);
-      final user = User.fromJson(data['user'] as Map<String, dynamic>);
+      final user = await _ref.read(authApiProvider).getMe();
       state = AuthState(user: user);
       return true;
     } catch (e) {
@@ -76,7 +76,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
           .read(authApiProvider)
           .staffLogin(email, password, deviceId);
       await _saveTokens(data);
-      final user = User.fromJson(data['user'] as Map<String, dynamic>);
+      final user = await _ref.read(authApiProvider).getMe();
       state = AuthState(user: user);
       return true;
     } catch (e) {
@@ -92,7 +92,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final data =
           await _ref.read(authApiProvider).guardLogin(phone, pin, deviceId);
       await _saveTokens(data);
-      final user = User.fromJson(data['user'] as Map<String, dynamic>);
+      final user = await _ref.read(authApiProvider).getMe();
       state = AuthState(user: user);
       return true;
     } catch (e) {

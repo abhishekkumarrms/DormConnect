@@ -40,8 +40,9 @@ class _GuardianLoginScreenState
   Widget build(BuildContext context) {
     final isLoading = ref.watch(authProvider).isLoading;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
@@ -99,6 +100,7 @@ class _GuardianLoginScreenState
                     label: 'Send OTP',
                     onPressed: _sendOtp,
                     isLoading: isLoading),
+                const SizedBox(height: 24),
               ],
             ),
           ),
@@ -156,7 +158,8 @@ class _GuardianOtpScreenState extends ConsumerState<GuardianOtpScreen> {
     final m = _seconds ~/ 60, s = _seconds % 60;
     return Scaffold(
       appBar: AppBar(title: const Text('Verify OTP')),
-      body: Padding(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
@@ -186,6 +189,7 @@ class _GuardianOtpScreenState extends ConsumerState<GuardianOtpScreen> {
                   label: 'Verify',
                   onPressed: _verify,
                   isLoading: isLoading),
+              const SizedBox(height: 24),
             ],
           ),
         ),

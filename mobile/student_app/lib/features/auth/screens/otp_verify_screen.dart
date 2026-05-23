@@ -88,8 +88,9 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
     final auth = ref.watch(authProvider);
     return Scaffold(
       backgroundColor: AppColors.primary,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(24),
           child: Column(
             children: [
@@ -197,6 +198,7 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 24),
             ],
           ),
         ),

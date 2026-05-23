@@ -5,8 +5,16 @@ class GateApi {
   final ApiClient _client;
   GateApi(this._client);
 
-  Future<GateOtp> generateOtp() async {
-    final resp = await _client.post('/api/v1/gate/otp/generate');
+  Future<GateOtp> generateOtp({
+    String? movementType,
+    String? destination,
+    DateTime? expectedReturn,
+  }) async {
+    final resp = await _client.post('/api/v1/gate/otp/generate', data: {
+      if (movementType != null) 'movement_type': movementType,
+      if (destination != null) 'destination': destination,
+      if (expectedReturn != null) 'expected_return': expectedReturn.toIso8601String(),
+    });
     return GateOtp.fromJson(resp.data as Map<String, dynamic>);
   }
 
