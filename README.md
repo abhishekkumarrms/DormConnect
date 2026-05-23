@@ -99,3 +99,45 @@ Web: http://localhost:3000
 - FCM real integration
 - MSG91 SMS integration
 - Production deployment config
+
+## Running All Services (PM2)
+
+### Prerequisites
+- Python 3.11+ with virtualenv activated (`source backend/venv/bin/activate`)
+- Node.js 18+
+- PM2: `npm install -g pm2`
+- PostgreSQL + Redis running: `docker-compose up -d`
+
+### Dev
+```bash
+npm start
+```
+
+### Production
+```bash
+npm run start:prod
+```
+
+### Common commands
+```bash
+npm run status       # PM2 process table
+npm run logs         # all logs live
+npm run logs:api     # FastAPI logs only
+npm run logs:web     # Next.js logs only
+npm run restart      # restart all
+npm run stop         # stop all
+npm run monit        # CPU/mem dashboard
+```
+
+### Auto-start on reboot (run once)
+```bash
+npm run startup      # follow printed instructions
+pm2 save
+```
+
+## Services & Ports
+| Service           | Port | URL                            |
+|-------------------|------|--------------------------------|
+| FastAPI Backend   | 8000 | http://localhost:8000          |
+| API Docs          | 8000 | http://localhost:8000/api/docs |
+| Next.js Web Panel | 3000 | http://localhost:3000          |

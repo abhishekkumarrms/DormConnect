@@ -108,6 +108,22 @@ async def live_out(
     return await gate_service.get_current_out_students(hostel_id, db)
 
 
+@router.get("/history", response_model=list[MovementLogResponse])
+async def my_movement_history(
+    limit: int = Query(50, le=200),
+    page: int = Query(1, ge=1),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles(Role.STUDENT)),
+):
+    from app.models.student import Student
+    from sqlalchemy import select
+    result = await db.execute(select(Student).where(Student.user_id == current_user.id))
+    student = result.scalar_one_or_none()
+    if not student:
+        return []
+    return await gate_service.get_movement_history(student.id, db, limit)
+
+
 @router.get("/history/{student_id}", response_model=list[MovementLogResponse])
 async def movement_history(
     student_id: uuid.UUID,

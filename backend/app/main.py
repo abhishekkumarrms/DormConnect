@@ -31,9 +31,17 @@ app = FastAPI(
     redoc_url="/api/redoc",
 )
 
+def _cors_origins() -> list[str]:
+    if settings.ENVIRONMENT == "development":
+        return ["*"]
+    if settings.ALLOWED_ORIGINS:
+        return [o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()]
+    return ["*"]  # open by default — lock down via ALLOWED_ORIGINS env var in production
+
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] if settings.ENVIRONMENT == "development" else [],
+    allow_origins=_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

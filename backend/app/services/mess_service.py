@@ -187,3 +187,13 @@ async def _build_off_response(off: MessOff, db: AsyncSession) -> MessOffResponse
         is_approved=off.is_approved,
         created_at=off.created_at,
     )
+
+
+async def get_my_mess_offs(student_id: uuid.UUID, db: AsyncSession) -> list[MessOffResponse]:
+    result = await db.execute(
+        select(MessOff)
+        .where(MessOff.student_id == student_id)
+        .order_by(MessOff.created_at.desc())
+    )
+    offs = result.scalars().all()
+    return [await _build_off_response(o, db) for o in offs]

@@ -50,15 +50,28 @@ async def complaint_stats(
 
 @router.get("/", response_model=list[ComplaintResponse])
 async def list_complaints(
-    hostel_id: uuid.UUID = Query(...),
+    hostel_id: Optional[uuid.UUID] = Query(None),
     status: Optional[str] = Query(None),
     category: Optional[str] = Query(None),
     date_from: Optional[datetime] = Query(None),
     date_to: Optional[datetime] = Query(None),
+    limit: Optional[int] = Query(None),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_roles(*CARETAKER_PLUS)),
+    current_user: User = Depends(get_current_user),
 ):
-    return await complaint_service.get_complaints(hostel_id, db, status=status, category=category, date_from=date_from, date_to=date_to)
+    if current_user.role == Role.STUDENT:
+        from sqlalchemy import select
+        from app.models.student import Student
+        result = await db.execute(select(Student).where(Student.user_id == current_user.id))
+        student = result.scalar_one_or_none()
+        if not student:
+            return []
+        rows = await complaint_service.get_complaints(student.hostel_id, db, student_id=student.id, status=status)
+        return rows[:limit] if limit else rows
+    if not hostel_id:
+        return []
+    rows = await complaint_service.get_complaints(hostel_id, db, status=status, category=category, date_from=date_from, date_to=date_to)
+    return rows[:limit] if limit else rows
 
 
 @router.get("/{complaint_id}", response_model=ComplaintResponse)

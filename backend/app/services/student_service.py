@@ -10,8 +10,8 @@ from app.models.student import Student, EnrollmentStatus, StudentStatus
 from app.models.institution import Hostel
 from app.schemas.student import (
     EnrollmentRequest, EnrollmentResponse, StudentProfile,
+    PendingEnrollmentResponse,
 )
-from app.core.security import hash_password
 from app.utils.audit import log_audit
 from app.utils.notifications import send_sms
 
@@ -20,15 +20,12 @@ logger = logging.getLogger(__name__)
 
 async def create_enrollment(
     data: EnrollmentRequest,
-    fee_receipt_url: Optional[str],
     db: AsyncSession,
 ) -> EnrollmentResponse:
-    # Check phone not already registered
     existing = await db.execute(select(User).where(User.phone == data.phone))
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=409, detail="Phone number already registered")
 
-    # Verify hostel exists
     hostel_result = await db.execute(select(Hostel).where(Hostel.id == data.hostel_id))
     hostel = hostel_result.scalar_one_or_none()
     if not hostel:
@@ -50,8 +47,10 @@ async def create_enrollment(
         roll_number=data.roll_number,
         room_number=data.room_number,
         hostel_id=data.hostel_id,
+        guardian_name=data.guardian_name,
+        guardian_phone=data.guardian_phone,
+        guardian_relation=data.guardian_relation,
         enrollment_status=EnrollmentStatus.PENDING,
-        fee_receipt_url=fee_receipt_url,
         current_status=StudentStatus.IN,
     )
     db.add(student)
@@ -78,7 +77,9 @@ async def create_enrollment(
     )
 
 
-async def get_pending_enrollments(hostel_id: uuid.UUID, db: AsyncSession) -> list[EnrollmentResponse]:
+async def get_pending_enrollments(
+    hostel_id: uuid.UUID, db: AsyncSession
+) -> list[PendingEnrollmentResponse]:
     result = await db.execute(
         select(Student, User)
         .join(User, Student.user_id == User.id)
@@ -86,11 +87,19 @@ async def get_pending_enrollments(hostel_id: uuid.UUID, db: AsyncSession) -> lis
         .order_by(Student.created_at.asc())
     )
     rows = result.all()
+    hostel = await db.get(Hostel, hostel_id)
     return [
-        EnrollmentResponse(
+        PendingEnrollmentResponse(
             id=s.id,
             name=u.name,
+            phone=u.phone,
             roll_number=s.roll_number,
+            room_number=s.room_number,
+            hostel_id=s.hostel_id,
+            hostel_name=hostel.name if hostel else None,
+            guardian_name=s.guardian_name,
+            guardian_phone=s.guardian_phone,
+            guardian_relation=s.guardian_relation,
             enrollment_status=s.enrollment_status.value,
             created_at=s.created_at,
         )
@@ -109,10 +118,23 @@ async def approve_enrollment(
     user.is_active = True
     student.enrollment_status = EnrollmentStatus.ACTIVE
 
-    # Auto-create guardian user if guardian_phone stored (we need to query from enrollment metadata)
-    # Guardian phone was passed at enrollment time — stored as separate user
-    # Check if guardian already exists by looking up existing GUARDIAN users
-    # (In a real flow, guardian_phone is stored during enrollment — here we query)
+    # Auto-create guardian user from stored guardian fields
+    if student.guardian_phone and not student.guardian_user_id:
+        existing_guardian = await db.execute(
+            select(User).where(User.phone == student.guardian_phone)
+        )
+        guardian_user = existing_guardian.scalar_one_or_none()
+        if not guardian_user:
+            guardian_user = User(
+                phone=student.guardian_phone,
+                name=student.guardian_name or f"Guardian of {user.name}",
+                role=Role.GUARDIAN,
+                institution_id=user.institution_id,
+                is_active=True,
+            )
+            db.add(guardian_user)
+            await db.flush()
+        student.guardian_user_id = guardian_user.id
 
     await log_audit(
         db,
@@ -121,7 +143,7 @@ async def approve_enrollment(
         entity_id=str(student.id),
         performed_by=caretaker_user.id,
         old_value={"enrollment_status": "PENDING"},
-        new_value={"enrollment_status": "ACTIVE"},
+        new_value={"enrollment_status": "ACTIVE", "method": "physical_verification"},
     )
 
     await db.commit()
@@ -129,7 +151,6 @@ async def approve_enrollment(
     await db.refresh(user)
 
     hostel = await db.get(Hostel, student.hostel_id) if student.hostel_id else None
-
     return _build_profile(student, user, hostel)
 
 
@@ -159,12 +180,7 @@ async def reject_enrollment(
 async def get_student_profile(student_id: uuid.UUID, db: AsyncSession) -> StudentProfile:
     student, user = await _get_student_and_user(student_id, db)
     hostel = await db.get(Hostel, student.hostel_id) if student.hostel_id else None
-
-    guardian = None
-    if student.guardian_user_id:
-        guardian = await db.get(User, student.guardian_user_id)
-
-    return _build_profile(student, user, hostel, guardian)
+    return _build_profile(student, user, hostel)
 
 
 async def get_student_profile_by_user(user_id: uuid.UUID, db: AsyncSession) -> StudentProfile:
@@ -268,7 +284,6 @@ def _build_profile(
     student: Student,
     user: User,
     hostel: Optional[Hostel] = None,
-    guardian: Optional[User] = None,
 ) -> StudentProfile:
     return StudentProfile(
         id=student.id,
@@ -281,8 +296,8 @@ def _build_profile(
         hostel_name=hostel.name if hostel else None,
         enrollment_status=student.enrollment_status.value,
         current_status=student.current_status.value,
-        fee_receipt_url=student.fee_receipt_url,
-        guardian_name=guardian.name if guardian else None,
-        guardian_phone=guardian.phone if guardian else None,
+        guardian_name=student.guardian_name,
+        guardian_phone=student.guardian_phone,
+        guardian_relation=student.guardian_relation,
         created_at=student.created_at,
     )

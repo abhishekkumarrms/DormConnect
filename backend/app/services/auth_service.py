@@ -22,8 +22,10 @@ logger = logging.getLogger(__name__)
 security = HTTPBearer()
 
 
+DEMO_OTP = "123456"
+
 async def send_sms_otp(phone: str, redis: aioredis.Redis) -> bool:
-    otp = generate_otp(6)
+    otp = DEMO_OTP if settings.ENVIRONMENT == "development" else generate_otp(6)
     await store_sms_otp(redis, phone, otp)
 
     if settings.ENVIRONMENT == "development":
@@ -65,7 +67,7 @@ async def login_student_guardian(
     if user.role not in (Role.STUDENT, Role.GUARDIAN):
         raise HTTPException(status_code=403, detail="Use staff login for staff accounts")
 
-    if device_id and user.device_id and user.device_id != device_id:
+    if settings.ENVIRONMENT != "development" and device_id and user.device_id and user.device_id != device_id:
         raise HTTPException(
             status_code=409,
             detail="Account already active on another device. Contact caretaker.",
@@ -91,7 +93,7 @@ async def login_staff_email(
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account deactivated")
 
-    if device_id and user.device_id and user.device_id != device_id:
+    if settings.ENVIRONMENT != "development" and device_id and user.device_id and user.device_id != device_id:
         raise HTTPException(
             status_code=409,
             detail="Account already active on another device. Contact caretaker.",
@@ -117,7 +119,7 @@ async def login_guard_pin(
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account deactivated")
 
-    if device_id and user.device_id and user.device_id != device_id:
+    if settings.ENVIRONMENT != "development" and device_id and user.device_id and user.device_id != device_id:
         raise HTTPException(
             status_code=409,
             detail="Account already active on another device. Contact caretaker.",

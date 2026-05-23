@@ -68,6 +68,32 @@ async def refresh(
     return await refresh_tokens(body.refresh_token, redis, db)
 
 
+@router.get("/me")
+async def me(current_user: User = Depends(get_current_user)):
+    role_map = {
+        "STUDENT": "student",
+        "GUARDIAN": "guardian",
+        "CHIEF_WARDEN": "chiefWarden",
+        "ASST_CHIEF_WARDEN": "asstChiefWarden",
+        "WARDEN": "warden",
+        "ASST_WARDEN": "asstWarden",
+        "CARETAKER": "caretaker",
+        "GUARD": "guard",
+    }
+    return {
+        "id": str(current_user.id),
+        "name": current_user.name,
+        "phone": current_user.phone,
+        "email": current_user.email,
+        "role": role_map.get(current_user.role.value, current_user.role.value),
+        "hostelId": str(current_user.hostel_id) if current_user.hostel_id else None,
+        "institutionId": str(current_user.institution_id) if current_user.institution_id else None,
+        "isActive": current_user.is_active,
+        "fcmToken": None,
+        "createdAt": current_user.created_at.isoformat() if hasattr(current_user, 'created_at') and current_user.created_at else None,
+    }
+
+
 @router.post("/logout")
 async def logout(
     current_user: User = Depends(get_current_user),

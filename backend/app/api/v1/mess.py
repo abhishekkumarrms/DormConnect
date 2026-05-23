@@ -26,6 +26,19 @@ async def post_menu(
     return await mess_service.post_menu(hostel_id, body, current_user, db)
 
 
+@router.get("/menu", response_model=Optional[MessMenuResponse])
+async def get_menu_by_query(
+    hostel_id: Optional[uuid.UUID] = Query(None),
+    menu_date: Optional[date] = Query(None),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles(*ALL_AUTH)),
+):
+    hid = hostel_id or current_user.hostel_id
+    if not hid:
+        return None
+    return await mess_service.get_today_menu(hid, db, menu_date)
+
+
 @router.get("/menu/{hostel_id}", response_model=Optional[MessMenuResponse])
 async def get_menu(
     hostel_id: uuid.UUID,
@@ -53,6 +66,20 @@ async def apply_mess_off(
     current_user: User = Depends(require_roles(Role.STUDENT)),
 ):
     return await mess_service.apply_mess_off(current_user, body, db)
+
+
+@router.get("/mess-off/my", response_model=list[MessOffResponse])
+async def my_mess_offs(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles(Role.STUDENT)),
+):
+    from app.models.student import Student
+    from sqlalchemy import select
+    result = await db.execute(select(Student).where(Student.user_id == current_user.id))
+    student = result.scalar_one_or_none()
+    if not student:
+        return []
+    return await mess_service.get_my_mess_offs(student.id, db)
 
 
 @router.get("/mess-off/{hostel_id}", response_model=list[MessOffResponse])
