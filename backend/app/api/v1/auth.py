@@ -10,11 +10,41 @@ from app.schemas.auth import (
 )
 from app.services.auth_service import (
     send_sms_otp, login_student_guardian, login_staff_email,
-    login_guard_pin, refresh_tokens, get_current_user,
+    login_guard_pin, refresh_tokens, get_current_user, _use_demo_otp,
 )
+from app.core.config import settings
 from app.models.user import User
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+@router.get("/debug-info")
+async def debug_info(redis=Depends(get_redis)):
+    """Only available when SMS is not configured — shows env and Redis health."""
+    if not _use_demo_otp():
+        return {"demo_mode": False}
+    try:
+        await redis.ping()
+        redis_ok = True
+    except Exception as e:
+        redis_ok = False
+    return {
+        "demo_mode": True,
+        "environment": settings.ENVIRONMENT,
+        "sms_api_key_set": bool(settings.SMS_API_KEY),
+        "redis_ok": redis_ok,
+        "demo_otp": "123456",
+    }
+
+
+@router.get("/debug-otp/{phone}")
+async def debug_otp(phone: str, redis=Depends(get_redis)):
+    """Returns stored OTP for a phone — only available in demo mode."""
+    if not _use_demo_otp():
+        from fastapi import HTTPException
+        raise HTTPException(status_code=403, detail="Not available in production with SMS configured")
+    stored = await redis.get(f"sms_otp:{phone}")
+    return {"phone": phone, "stored_otp": stored}
 
 
 @router.post("/send-otp")
