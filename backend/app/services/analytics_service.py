@@ -132,6 +132,28 @@ async def get_institution_overview(institution_id: uuid.UUID, db: AsyncSession) 
     )
 
 
+async def get_pending_leave_count(hostel_id: uuid.UUID, db: AsyncSession) -> int:
+    result = await db.execute(
+        select(func.count(LeaveApplication.id))
+        .join(Student, LeaveApplication.student_id == Student.id)
+        .where(
+            Student.hostel_id == hostel_id,
+            LeaveApplication.status.in_([LeaveStatus.SUBMITTED, LeaveStatus.UNDER_REVIEW, LeaveStatus.GUARDIAN_CONTACTED]),
+        )
+    )
+    return result.scalar_one()
+
+
+async def get_pending_enrollment_count(hostel_id: uuid.UUID, db: AsyncSession) -> int:
+    result = await db.execute(
+        select(func.count(Student.id)).where(
+            Student.hostel_id == hostel_id,
+            Student.enrollment_status == EnrollmentStatus.PENDING,
+        )
+    )
+    return result.scalar_one()
+
+
 async def get_staff_performance(hostel_id: uuid.UUID, db: AsyncSession) -> list[StaffPerformance]:
     from app.models.complaint import ComplaintUpdate
 

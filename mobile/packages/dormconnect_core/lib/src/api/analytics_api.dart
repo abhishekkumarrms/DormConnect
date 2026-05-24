@@ -12,7 +12,7 @@ class AnalyticsApi {
   }
 
   Future<HostelHealth> getHostelHealth(String hostelId) async {
-    final resp = await _client.get('/api/v1/analytics/hostel/$hostelId');
+    final resp = await _client.get('/api/v1/analytics/hostel-health/$hostelId');
     return HostelHealth.fromJson(resp.data as Map<String, dynamic>);
   }
 }

@@ -2,6 +2,7 @@ import 'package:dormconnect_core/dormconnect_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'app_keys.dart';
 
 import 'features/auth/screens/staff_login_screen.dart';
 import 'features/home/screens/home_shell.dart';
@@ -47,6 +48,7 @@ class _RouterNotifier extends ChangeNotifier {
 final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _RouterNotifier(ref);
   return GoRouter(
+    navigatorKey: navigatorKey,
     initialLocation: '/login',
     refreshListenable: notifier,
     redirect: notifier.redirect,

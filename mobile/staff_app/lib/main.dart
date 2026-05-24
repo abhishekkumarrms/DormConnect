@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'app_keys.dart';
+import 'features/sos/screens/sos_alert_screen.dart';
 import 'router.dart';
 
 @pragma('vm:entry-point')
@@ -15,7 +17,7 @@ void main() async {
     await Firebase.initializeApp();
     FirebaseMessaging.onBackgroundMessage(_bgMessageHandler);
   } catch (_) {
-    // No google-services.json — Firebase optional
+    // No google-services.json — Firebase optional in dev
   }
 
   runApp(const ProviderScope(child: StaffApp()));
@@ -40,16 +42,18 @@ class _StaffAppState extends ConsumerState<StaffApp> {
       final svc = NotificationService(ref.read(apiClientProvider));
       await svc.initialize();
 
-      // Foreground notification → invalidate relevant providers
+      // Foreground SOS → push full-screen alert over whatever is showing
       FirebaseMessaging.onMessage.listen((msg) {
         final type = msg.data['type'] as String?;
-        switch (type) {
-          case 'new_enrollment':
-            // Screens will auto-refresh on next visit; no global invalidation needed
-            break;
-          case 'sos':
-            // Navigate to SOS screen via router
-            ref.read(routerProvider).go('/sos');
+        if (type == 'sos') {
+          navigatorKey.currentState?.push(
+            MaterialPageRoute<void>(
+              fullscreenDialog: true,
+              builder: (_) => SosAlertScreen(
+                data: Map<String, dynamic>.from(msg.data),
+              ),
+            ),
+          );
         }
       });
 

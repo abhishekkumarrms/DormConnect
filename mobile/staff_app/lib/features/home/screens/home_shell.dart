@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../utils/role_permissions.dart';
+import '../../../widgets/offline_banner.dart';
 
 class HomeShell extends ConsumerWidget {
   final Widget child;
@@ -86,7 +87,12 @@ class HomeShell extends ConsumerWidget {
     // Use NavigationBar for <= 5 tabs, NavigationDrawer-based for more
     if (tabs.length <= 5) {
       return Scaffold(
-        body: child,
+        body: Column(
+          children: [
+            const OfflineBanner(),
+            Expanded(child: child),
+          ],
+        ),
         bottomNavigationBar: NavigationBar(
           selectedIndex: idx,
           onDestinationSelected: (i) => context.go(tabs[i].path),
@@ -102,7 +108,12 @@ class HomeShell extends ConsumerWidget {
     }
 
     return Scaffold(
-      body: child,
+      body: Column(
+        children: [
+          const OfflineBanner(),
+          Expanded(child: child),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: idx < 5 ? idx : 0,
         onDestinationSelected: (i) => context.go(tabs[i].path),

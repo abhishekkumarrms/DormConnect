@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-// Provider hitting the generic notes endpoint
 final _handoverLogProvider = FutureProvider.autoDispose
     .family<List<Map<String, dynamic>>, String>(
         (ref, hostelId) async {
   final resp = await ref
       .watch(apiClientProvider)
-      .get('/api/v1/handover', params: {'hostel_id': hostelId});
+      .get('/api/v1/shifts/handover/$hostelId');
   return (resp.data as List<dynamic>).cast<Map<String, dynamic>>();
 });
+
 
 class HandoverScreen extends ConsumerStatefulWidget {
   const HandoverScreen({super.key});
@@ -106,18 +106,22 @@ class _HandoverScreenState extends ConsumerState<HandoverScreen> {
 
   Future<void> _log(
       BuildContext context, String hostelId, String staffName) async {
-    if (_toCtrl.text.trim().isEmpty) {
-      DcSnackbar.error(context, 'Enter handover recipient');
-      return;
-    }
     setState(() => _loading = true);
     try {
-      await ref.read(apiClientProvider).post('/api/v1/handover', data: {
-        'hostel_id': hostelId,
-        'from_staff': staffName,
-        'to_staff': _toCtrl.text.trim(),
-        'note': _noteCtrl.text.trim(),
-      });
+      // Get current shift to submit handover note against it
+      final shiftResp = await ref
+          .read(apiClientProvider)
+          .get('/api/v1/shifts/current/$hostelId');
+      final shift = shiftResp.data as Map<String, dynamic>?;
+      if (shift == null) {
+        if (context.mounted) DcSnackbar.error(context, 'No active shift found for this hostel.');
+        return;
+      }
+      final shiftId = shift['id'] as String;
+      await ref.read(apiClientProvider).post(
+        '/api/v1/shifts/$shiftId/handover',
+        data: {'note': _noteCtrl.text.trim()},
+      );
       _toCtrl.clear();
       _noteCtrl.clear();
       ref.invalidate(_handoverLogProvider(hostelId));

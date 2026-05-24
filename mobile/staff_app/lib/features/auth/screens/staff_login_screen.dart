@@ -1,7 +1,6 @@
 import 'package:dormconnect_core/dormconnect_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class StaffLoginScreen extends ConsumerStatefulWidget {
   const StaffLoginScreen({super.key});
@@ -25,7 +24,7 @@ class _StaffLoginScreenState extends ConsumerState<StaffLoginScreen> {
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) return;
-    final ok = await ref
+    await ref
         .read(authProvider.notifier)
         .staffLogin(_emailCtrl.text.trim(), _passCtrl.text);
     // router redirect handles navigation on auth state change

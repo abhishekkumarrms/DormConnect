@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Header, Request
+from fastapi import APIRouter, Depends, Header, HTTPException, Request
 from typing import Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -13,7 +13,8 @@ from app.services.auth_service import (
     login_guard_pin, refresh_tokens, get_current_user, _use_demo_otp,
 )
 from app.core.config import settings
-from app.models.user import User
+from app.models.user import User, Role
+from app.models.institution import Hostel
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -121,6 +122,42 @@ async def me(current_user: User = Depends(get_current_user)):
         "isActive": current_user.is_active,
         "fcmToken": None,
         "createdAt": current_user.created_at.isoformat() if hasattr(current_user, 'created_at') and current_user.created_at else None,
+    }
+
+
+@router.get("/staff/me")
+async def staff_me(
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Returns staff member profile including hostel_name. Used by staff app on launch."""
+    staff_roles = {Role.CHIEF_WARDEN, Role.ASST_CHIEF_WARDEN, Role.WARDEN, Role.ASST_WARDEN, Role.CARETAKER, Role.GUARD}
+    if current_user.role not in staff_roles:
+        raise HTTPException(status_code=403, detail="Not a staff account.")
+
+    hostel_name = None
+    if current_user.hostel_id:
+        hostel = await db.get(Hostel, current_user.hostel_id)
+        hostel_name = hostel.name if hostel else None
+
+    role_map = {
+        "CHIEF_WARDEN": "chiefWarden",
+        "ASST_CHIEF_WARDEN": "asstChiefWarden",
+        "WARDEN": "warden",
+        "ASST_WARDEN": "asstWarden",
+        "CARETAKER": "caretaker",
+        "GUARD": "guard",
+    }
+    return {
+        "id": str(current_user.id),
+        "name": current_user.name,
+        "phone": current_user.phone,
+        "email": current_user.email,
+        "role": role_map.get(current_user.role.value, current_user.role.value),
+        "hostelId": str(current_user.hostel_id) if current_user.hostel_id else None,
+        "hostelName": hostel_name,
+        "institutionId": str(current_user.institution_id) if current_user.institution_id else None,
+        "isActive": current_user.is_active,
     }
 
 
