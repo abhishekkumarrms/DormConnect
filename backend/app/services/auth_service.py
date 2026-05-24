@@ -116,12 +116,7 @@ async def login_student_guardian(
                 detail="Account deactivated. Contact caretaker.",
             )
 
-    if settings.ENVIRONMENT != "development" and device_id and user.device_id and user.device_id != device_id:
-        raise HTTPException(
-            status_code=409,
-            detail="Account already active on another device. Contact caretaker.",
-        )
-
+    # OTP already proves phone ownership — allow re-binding device_id on reinstall
     if device_id:
         user.device_id = device_id
         await db.commit()
