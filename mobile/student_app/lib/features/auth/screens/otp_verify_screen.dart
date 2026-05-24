@@ -178,6 +178,7 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
                                 onPressed: auth.isLoading ? null : _verify,
                                 style: FilledButton.styleFrom(
                                   backgroundColor: AppColors.primary,
+                                  foregroundColor: Colors.white,
                                   minimumSize: const Size.fromHeight(52),
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12)),

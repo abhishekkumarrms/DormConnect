@@ -132,6 +132,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                                   onPressed: auth.isLoading ? null : _sendOtp,
                                   style: FilledButton.styleFrom(
                                     backgroundColor: AppColors.primary,
+                                    foregroundColor: Colors.white,
                                     minimumSize: const Size.fromHeight(52),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:

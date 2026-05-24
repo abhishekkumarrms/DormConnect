@@ -24,12 +24,19 @@ security = HTTPBearer()
 
 DEMO_OTP = "123456"
 
+def _use_demo_otp() -> bool:
+    if settings.ENVIRONMENT == "development":
+        return True
+    sms_key = settings.SMS_API_KEY
+    return not sms_key or sms_key in ("your-msg91-key", "")
+
 async def send_sms_otp(phone: str, redis: aioredis.Redis) -> bool:
-    otp = DEMO_OTP if settings.ENVIRONMENT == "development" else generate_otp(6)
+    use_demo = _use_demo_otp()
+    otp = DEMO_OTP if use_demo else generate_otp(6)
     await store_sms_otp(redis, phone, otp)
 
-    if settings.ENVIRONMENT == "development":
-        logger.info(f"[DEV OTP] Phone: {phone} | OTP: {otp}")
+    if use_demo:
+        logger.info(f"[DEMO OTP] Phone: {phone} | OTP: {otp}")
         return True
 
     try:

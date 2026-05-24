@@ -53,6 +53,7 @@ class DcButton extends StatelessWidget {
       onPressed: isLoading ? null : onPressed,
       style: FilledButton.styleFrom(
         backgroundColor: effectiveColor,
+        foregroundColor: Colors.white,
         minimumSize: const Size.fromHeight(48),
       ),
       child: child,
