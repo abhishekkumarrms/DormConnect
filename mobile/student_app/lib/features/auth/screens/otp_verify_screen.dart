@@ -93,119 +93,142 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
   Widget build(BuildContext context) {
     final auth = ref.watch(authProvider);
     return Scaffold(
-      backgroundColor: AppColors.primary,
       resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            children: [
-              const SizedBox(height: 32),
-              Row(children: [
-                GestureDetector(
-                  onTap: () => context.go('/auth/phone'),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(8)),
-                    child: const Icon(Icons.arrow_back_rounded,
-                        color: Colors.white, size: 20),
-                  ),
-                ),
-              ]),
-              const SizedBox(height: 48),
-              Container(
-                padding: const EdgeInsets.all(28),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.15),
-                        blurRadius: 24,
-                        offset: const Offset(0, 8))
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Verify OTP',
-                        style: TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.w800,
-                            color: AppColors.primary)),
-                    const SizedBox(height: 4),
-                    RichText(
-                      text: TextSpan(
-                        style: const TextStyle(
-                            color: AppColors.textSecondary, fontSize: 13),
-                        children: [
-                          const TextSpan(text: 'Sent to +91 '),
-                          TextSpan(
-                              text: widget.phone,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColors.primary)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 28),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(6, (i) => _OtpBox(
-                        controller: _ctrls[i],
-                        focusNode: _nodes[i],
-                        onChanged: (v) {
-                          if (v.isNotEmpty && i < 5) {
-                            _nodes[i + 1].requestFocus();
-                          } else if (v.isEmpty && i > 0) {
-                            _nodes[i - 1].requestFocus();
-                          }
-                          if (_otp.length == 6) _verify();
-                        },
-                      )),
-                    ),
-                    const SizedBox(height: 28),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: auth.isLoading ? null : _verify,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          minimumSize: const Size.fromHeight(52),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        child: auth.isLoading
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(
-                                    color: Colors.white, strokeWidth: 2))
-                            : const Text('Verify',
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w600)),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Center(
-                      child: _secondsLeft > 0
-                          ? Text(
-                              'Resend in ${_secondsLeft}s',
-                              style: const TextStyle(
-                                  color: AppColors.textSecondary, fontSize: 13),
-                            )
-                          : TextButton(
-                              onPressed: _resend,
-                              child: const Text('Resend OTP'),
-                            ),
-                    ),
-                  ],
-                ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [AppColors.primary, AppColors.primaryDark],
+          ),
+        ),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom -
+                    48,
               ),
-              const SizedBox(height: 24),
-            ],
+              child: Column(
+                children: [
+                  const SizedBox(height: 32),
+                  Row(children: [
+                    GestureDetector(
+                      onTap: () => context.go('/auth/phone'),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(8)),
+                        child: const Icon(Icons.arrow_back_rounded,
+                            color: Colors.white, size: 20),
+                      ),
+                    ),
+                  ]),
+                  const SizedBox(height: 48),
+                  Container(
+                    padding: const EdgeInsets.all(28),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 24,
+                            offset: const Offset(0, 8))
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Verify OTP',
+                            style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w800,
+                                color: AppColors.primary)),
+                        const SizedBox(height: 4),
+                        RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                                color: AppColors.textSecondary, fontSize: 13),
+                            children: [
+                              const TextSpan(text: 'Sent to +91 '),
+                              TextSpan(
+                                  text: widget.phone,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: AppColors.primary)),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(6, (i) => _OtpBox(
+                            controller: _ctrls[i],
+                            focusNode: _nodes[i],
+                            onChanged: (v) {
+                              if (v.isNotEmpty && i < 5) {
+                                _nodes[i + 1].requestFocus();
+                              } else if (v.isEmpty && i > 0) {
+                                _nodes[i - 1].requestFocus();
+                              }
+                              if (_otp.length == 6) _verify();
+                            },
+                          )),
+                        ),
+                        const SizedBox(height: 28),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton(
+                            onPressed: auth.isLoading ? null : _verify,
+                            style: FilledButton.styleFrom(
+                              backgroundColor: AppColors.primary,
+                              minimumSize: const Size.fromHeight(52),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                            ),
+                            child: auth.isLoading
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                        color: Colors.white, strokeWidth: 2))
+                                : const Text('Verify',
+                                    style: TextStyle(
+                                        fontSize: 16, fontWeight: FontWeight.w600)),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Center(
+                          child: _secondsLeft > 0
+                              ? Text(
+                                  'Resend in ${_secondsLeft}s',
+                                  style: const TextStyle(
+                                      color: AppColors.textSecondary, fontSize: 13),
+                                )
+                              : TextButton(
+                                  onPressed: _resend,
+                                  child: const Text('Resend OTP'),
+                                ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Text(
+                    'Made with ❤️ by Cosmolith',
+                    style: TextStyle(
+                        color: Colors.white.withOpacity(0.5),
+                        fontSize: 12),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+              ),
+            ),
           ),
         ),
       ),

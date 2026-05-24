@@ -136,6 +136,11 @@ class _PendingApprovalScreenState extends ConsumerState<PendingApprovalScreen> {
                   child: const Text('Logout',
                       style: TextStyle(color: AppColors.textSecondary)),
                 ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Made with ❤️ by Cosmolith',
+                  style: TextStyle(color: AppColors.textTertiary, fontSize: 12),
+                ),
                 const SizedBox(height: 8),
               ],
             ),

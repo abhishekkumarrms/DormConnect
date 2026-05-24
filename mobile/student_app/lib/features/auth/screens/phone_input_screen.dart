@@ -49,7 +49,14 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: Column(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom -
+                    48,
+              ),
+              child: Column(
               children: [
                 const SizedBox(height: 48),
                 const Icon(Icons.apartment_rounded,
@@ -147,7 +154,15 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
+                Text(
+                  'Made with ❤️ by Cosmolith',
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.5),
+                      fontSize: 12),
+                ),
+                const SizedBox(height: 12),
               ],
+            ),
             ),
           ),
         ),

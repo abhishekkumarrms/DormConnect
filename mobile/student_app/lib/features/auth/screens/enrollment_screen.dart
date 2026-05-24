@@ -261,6 +261,14 @@ class _Step1 extends StatelessWidget {
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly]),
             const SizedBox(height: 32),
             DcButton(label: 'Next: Guardian Info', onPressed: onNext),
+            const SizedBox(height: 24),
+            const Center(
+              child: Text(
+                'Made with ❤️ by Cosmolith',
+                style: TextStyle(color: AppColors.textTertiary, fontSize: 12),
+              ),
+            ),
+            const SizedBox(height: 8),
           ],
         ),
       );
@@ -330,6 +338,14 @@ class _Step2 extends StatelessWidget {
                 label: 'Submit Registration',
                 onPressed: onSubmit,
                 isLoading: loading),
+            const SizedBox(height: 24),
+            const Center(
+              child: Text(
+                'Made with ❤️ by Cosmolith',
+                style: TextStyle(color: AppColors.textTertiary, fontSize: 12),
+              ),
+            ),
+            const SizedBox(height: 8),
           ],
         ),
       );
