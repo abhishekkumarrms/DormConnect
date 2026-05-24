@@ -9,7 +9,7 @@ final _myComplaintsListProvider =
 
 final _myMaintenanceListProvider =
     FutureProvider<List<MaintenanceRequest>>((ref) async =>
-        ref.watch(maintenanceApiProvider).list(limit: 50));
+        ref.watch(maintenanceApiProvider).listMine());
 
 class ActivityTab extends ConsumerWidget {
   const ActivityTab({super.key});
@@ -181,12 +181,10 @@ class _ComplaintCard extends StatelessWidget {
 
   static const _categoryIcons = {
     'food': Icons.restaurant_outlined,
-    'cleaning': Icons.cleaning_services_outlined,
+    'staffBehavior': Icons.person_off_outlined,
     'security': Icons.security_outlined,
-    'electrical': Icons.electrical_services_outlined,
-    'internet': Icons.wifi_outlined,
-    'furniture': Icons.chair_outlined,
-    'plumbing': Icons.water_drop_outlined,
+    'environment': Icons.nature_outlined,
+    'ragging': Icons.report_problem_outlined,
     'other': Icons.more_horiz_rounded,
   };
 
@@ -253,10 +251,9 @@ class _MaintenanceCard extends StatelessWidget {
   static const _typeIcons = {
     'plumbing': Icons.water_drop_outlined,
     'electrical': Icons.electrical_services_outlined,
-    'carpentry': Icons.handyman_outlined,
-    'painting': Icons.format_paint_outlined,
-    'civil': Icons.foundation_outlined,
-    'appliance': Icons.kitchen_outlined,
+    'furniture': Icons.chair_outlined,
+    'internet': Icons.wifi_outlined,
+    'cleanliness': Icons.cleaning_services_outlined,
     'other': Icons.build_outlined,
   };
 

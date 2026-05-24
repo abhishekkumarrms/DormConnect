@@ -4,11 +4,22 @@ part 'complaint.freezed.dart';
 part 'complaint.g.dart';
 
 enum ComplaintCategory {
-  electrical, plumbing, furniture, cleaning, internet, food, security, other
+  @JsonValue('FOOD') food,
+  @JsonValue('STAFF_BEHAVIOR') staffBehavior,
+  @JsonValue('SECURITY') security,
+  @JsonValue('ENVIRONMENT') environment,
+  @JsonValue('RAGGING') ragging,
+  @JsonValue('OTHER') other,
 }
 
 enum ComplaintStatus {
-  submitted, accepted, inProgress, resolved, rejected, escalated, reopened
+  @JsonValue('SUBMITTED') submitted,
+  @JsonValue('ACCEPTED') accepted,
+  @JsonValue('IN_PROGRESS') inProgress,
+  @JsonValue('RESOLVED') resolved,
+  @JsonValue('REJECTED') rejected,
+  @JsonValue('ESCALATED') escalated,
+  @JsonValue('REOPENED') reopened,
 }
 
 @freezed
@@ -29,7 +40,7 @@ class ComplaintUpdate with _$ComplaintUpdate {
 class Complaint with _$Complaint {
   const factory Complaint({
     required String id,
-    required String studentId,
+    String? studentId,
     String? studentName,
     String? roomNumber,
     required ComplaintCategory category,

@@ -12,28 +12,37 @@ _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
       phone: json['phone'] as String,
       email: json['email'] as String?,
       role: $enumDecode(_$UserRoleEnumMap, json['role']),
-      hostelId: json['hostelId'] as String?,
-      institutionId: json['institutionId'] as String?,
-      fcmToken: json['fcmToken'] as String?,
-      isActive: json['isActive'] as bool? ?? true,
-      createdAt: json['createdAt'] == null
+      hostelId: json['hostel_id'] as String?,
+      institutionId: json['institution_id'] as String?,
+      fcmToken: json['fcm_token'] as String?,
+      isActive: json['is_active'] as bool? ?? true,
+      createdAt: json['created_at'] == null
           ? null
-          : DateTime.parse(json['createdAt'] as String),
+          : DateTime.parse(json['created_at'] as String),
     );
 
-Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'phone': instance.phone,
-      'email': instance.email,
-      'role': _$UserRoleEnumMap[instance.role]!,
-      'hostelId': instance.hostelId,
-      'institutionId': instance.institutionId,
-      'fcmToken': instance.fcmToken,
-      'isActive': instance.isActive,
-      'createdAt': instance.createdAt?.toIso8601String(),
-    };
+Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'name': instance.name,
+    'phone': instance.phone,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('email', instance.email);
+  val['role'] = _$UserRoleEnumMap[instance.role]!;
+  writeNotNull('hostel_id', instance.hostelId);
+  writeNotNull('institution_id', instance.institutionId);
+  writeNotNull('fcm_token', instance.fcmToken);
+  val['is_active'] = instance.isActive;
+  writeNotNull('created_at', instance.createdAt?.toIso8601String());
+  return val;
+}
 
 const _$UserRoleEnumMap = {
   UserRole.chiefWarden: 'chiefWarden',
@@ -48,18 +57,18 @@ const _$UserRoleEnumMap = {
 
 _$TokenResponseImpl _$$TokenResponseImplFromJson(Map<String, dynamic> json) =>
     _$TokenResponseImpl(
-      accessToken: json['accessToken'] as String,
-      refreshToken: json['refreshToken'] as String,
-      tokenType: json['tokenType'] as String,
+      accessToken: json['access_token'] as String,
+      refreshToken: json['refresh_token'] as String,
+      tokenType: json['token_type'] as String,
       role: json['role'] as String,
-      userId: json['userId'] as String,
+      userId: json['user_id'] as String,
     );
 
 Map<String, dynamic> _$$TokenResponseImplToJson(_$TokenResponseImpl instance) =>
     <String, dynamic>{
-      'accessToken': instance.accessToken,
-      'refreshToken': instance.refreshToken,
-      'tokenType': instance.tokenType,
+      'access_token': instance.accessToken,
+      'refresh_token': instance.refreshToken,
+      'token_type': instance.tokenType,
       'role': instance.role,
-      'userId': instance.userId,
+      'user_id': instance.userId,
     };

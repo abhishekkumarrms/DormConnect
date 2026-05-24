@@ -34,36 +34,46 @@ _$StudentImpl _$$StudentImplFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['created_at'] as String),
     );
 
-Map<String, dynamic> _$$StudentImplToJson(_$StudentImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'user_id': instance.userId,
-      'name': instance.name,
-      'phone': instance.phone,
-      'roll_number': instance.rollNumber,
-      'room_number': instance.roomNumber,
-      'hostel_id': instance.hostelId,
-      'hostel_name': instance.hostelName,
-      'guardian_name': instance.guardianName,
-      'guardian_phone': instance.guardianPhone,
-      'guardian_relation': instance.guardianRelation,
-      'email': instance.email,
-      'profile_photo': instance.profilePhoto,
-      'course': instance.course,
-      'year': instance.year,
-      'enrollment_status': _$EnrollmentStatusEnumMap[instance.enrollmentStatus]!,
-      'current_status': _$StudentStatusEnumMap[instance.currentStatus]!,
-      'created_at': instance.createdAt?.toIso8601String(),
-    };
+Map<String, dynamic> _$$StudentImplToJson(_$StudentImpl instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'user_id': instance.userId,
+    'name': instance.name,
+    'phone': instance.phone,
+    'roll_number': instance.rollNumber,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('room_number', instance.roomNumber);
+  val['hostel_id'] = instance.hostelId;
+  writeNotNull('hostel_name', instance.hostelName);
+  writeNotNull('guardian_name', instance.guardianName);
+  writeNotNull('guardian_phone', instance.guardianPhone);
+  writeNotNull('guardian_relation', instance.guardianRelation);
+  writeNotNull('email', instance.email);
+  writeNotNull('profile_photo', instance.profilePhoto);
+  writeNotNull('course', instance.course);
+  writeNotNull('year', instance.year);
+  val['enrollment_status'] =
+      _$EnrollmentStatusEnumMap[instance.enrollmentStatus]!;
+  val['current_status'] = _$StudentStatusEnumMap[instance.currentStatus]!;
+  writeNotNull('created_at', instance.createdAt?.toIso8601String());
+  return val;
+}
 
 const _$EnrollmentStatusEnumMap = {
-  EnrollmentStatus.pending: 'PENDING',
-  EnrollmentStatus.active: 'ACTIVE',
-  EnrollmentStatus.inactive: 'INACTIVE',
-  EnrollmentStatus.checkedOut: 'CHECKED_OUT',
+  EnrollmentStatus.pending: 'pending',
+  EnrollmentStatus.active: 'active',
+  EnrollmentStatus.inactive: 'inactive',
+  EnrollmentStatus.checkedOut: 'checkedOut',
 };
 
 const _$StudentStatusEnumMap = {
-  StudentStatus.inHostel: 'IN',
-  StudentStatus.outHostel: 'OUT',
+  StudentStatus.inHostel: 'inHostel',
+  StudentStatus.outHostel: 'outHostel',
 };

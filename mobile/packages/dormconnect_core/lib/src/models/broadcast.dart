@@ -3,7 +3,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'broadcast.freezed.dart';
 part 'broadcast.g.dart';
 
-enum BroadcastCategory { general, important, mess, holiday, event }
+enum BroadcastCategory {
+  @JsonValue('GENERAL') general,
+  @JsonValue('IMPORTANT') important,
+  @JsonValue('MESS') mess,
+  @JsonValue('HOLIDAY') holiday,
+  @JsonValue('EVENT') event,
+}
 
 @freezed
 class Broadcast with _$Broadcast {
@@ -12,7 +18,7 @@ class Broadcast with _$Broadcast {
     required String title,
     required String body,
     required BroadcastCategory category,
-    required String sentByName,
+    String? sentByName,
     String? hostelId,
     DateTime? createdAt,
   }) = _Broadcast;
@@ -29,7 +35,7 @@ class Notice with _$Notice {
     required String body,
     String? category,
     @Default(false) bool isPinned,
-    required String postedByName,
+    String? postedByName,
     String? hostelId,
     DateTime? createdAt,
     DateTime? updatedAt,

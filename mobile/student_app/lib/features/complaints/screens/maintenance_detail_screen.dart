@@ -13,10 +13,9 @@ class MaintenanceDetailScreen extends ConsumerWidget {
   static const _categoryIcons = {
     'plumbing': Icons.water_drop_outlined,
     'electrical': Icons.electrical_services_outlined,
-    'carpentry': Icons.handyman_outlined,
-    'painting': Icons.format_paint_outlined,
-    'civil': Icons.foundation_outlined,
-    'appliance': Icons.kitchen_outlined,
+    'furniture': Icons.chair_outlined,
+    'internet': Icons.wifi_outlined,
+    'cleanliness': Icons.cleaning_services_outlined,
     'other': Icons.build_outlined,
   };
 
@@ -69,7 +68,7 @@ class MaintenanceDetailScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              req.title,
+                              req.title ?? req.category.name.snakeToTitle,
                               style: const TextStyle(
                                   fontWeight: FontWeight.w700, fontSize: 15),
                             ),

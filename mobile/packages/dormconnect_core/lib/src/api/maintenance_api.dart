@@ -21,6 +21,13 @@ class MaintenanceApi {
     return MaintenanceRequest.fromJson(resp.data as Map<String, dynamic>);
   }
 
+  Future<List<MaintenanceRequest>> listMine() async {
+    final resp = await _client.get('/api/v1/maintenance/mine');
+    return (resp.data as List<dynamic>)
+        .map((e) => MaintenanceRequest.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
   Future<List<MaintenanceRequest>> list({
     String? status,
     int page = 1,

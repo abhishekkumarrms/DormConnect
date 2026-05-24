@@ -21,22 +21,34 @@ Student _$StudentFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Student {
   String get id => throw _privateConstructorUsedError;
+  @JsonKey(name: 'user_id')
   String get userId => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
+  @JsonKey(name: 'roll_number')
   String get rollNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'room_number')
   String? get roomNumber => throw _privateConstructorUsedError;
+  @JsonKey(name: 'hostel_id')
   String get hostelId => throw _privateConstructorUsedError;
+  @JsonKey(name: 'hostel_name')
   String? get hostelName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'guardian_name')
   String? get guardianName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'guardian_phone')
   String? get guardianPhone => throw _privateConstructorUsedError;
+  @JsonKey(name: 'guardian_relation')
   String? get guardianRelation => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
+  @JsonKey(name: 'profile_photo')
   String? get profilePhoto => throw _privateConstructorUsedError;
   String? get course => throw _privateConstructorUsedError;
   int? get year => throw _privateConstructorUsedError;
+  @JsonKey(name: 'enrollment_status')
   EnrollmentStatus get enrollmentStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: 'current_status')
   StudentStatus get currentStatus => throw _privateConstructorUsedError;
+  @JsonKey(name: 'created_at')
   DateTime? get createdAt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -51,23 +63,23 @@ abstract class $StudentCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String userId,
+      @JsonKey(name: 'user_id') String userId,
       String name,
       String phone,
-      String rollNumber,
-      String? roomNumber,
-      String hostelId,
-      String? hostelName,
-      String? guardianName,
-      String? guardianPhone,
-      String? guardianRelation,
+      @JsonKey(name: 'roll_number') String rollNumber,
+      @JsonKey(name: 'room_number') String? roomNumber,
+      @JsonKey(name: 'hostel_id') String hostelId,
+      @JsonKey(name: 'hostel_name') String? hostelName,
+      @JsonKey(name: 'guardian_name') String? guardianName,
+      @JsonKey(name: 'guardian_phone') String? guardianPhone,
+      @JsonKey(name: 'guardian_relation') String? guardianRelation,
       String? email,
-      String? profilePhoto,
+      @JsonKey(name: 'profile_photo') String? profilePhoto,
       String? course,
       int? year,
-      EnrollmentStatus enrollmentStatus,
-      StudentStatus currentStatus,
-      DateTime? createdAt});
+      @JsonKey(name: 'enrollment_status') EnrollmentStatus enrollmentStatus,
+      @JsonKey(name: 'current_status') StudentStatus currentStatus,
+      @JsonKey(name: 'created_at') DateTime? createdAt});
 }
 
 /// @nodoc
@@ -188,23 +200,23 @@ abstract class _$$StudentImplCopyWith<$Res> implements $StudentCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String userId,
+      @JsonKey(name: 'user_id') String userId,
       String name,
       String phone,
-      String rollNumber,
-      String? roomNumber,
-      String hostelId,
-      String? hostelName,
-      String? guardianName,
-      String? guardianPhone,
-      String? guardianRelation,
+      @JsonKey(name: 'roll_number') String rollNumber,
+      @JsonKey(name: 'room_number') String? roomNumber,
+      @JsonKey(name: 'hostel_id') String hostelId,
+      @JsonKey(name: 'hostel_name') String? hostelName,
+      @JsonKey(name: 'guardian_name') String? guardianName,
+      @JsonKey(name: 'guardian_phone') String? guardianPhone,
+      @JsonKey(name: 'guardian_relation') String? guardianRelation,
       String? email,
-      String? profilePhoto,
+      @JsonKey(name: 'profile_photo') String? profilePhoto,
       String? course,
       int? year,
-      EnrollmentStatus enrollmentStatus,
-      StudentStatus currentStatus,
-      DateTime? createdAt});
+      @JsonKey(name: 'enrollment_status') EnrollmentStatus enrollmentStatus,
+      @JsonKey(name: 'current_status') StudentStatus currentStatus,
+      @JsonKey(name: 'created_at') DateTime? createdAt});
 }
 
 /// @nodoc
@@ -319,23 +331,25 @@ class __$$StudentImplCopyWithImpl<$Res>
 class _$StudentImpl implements _Student {
   const _$StudentImpl(
       {required this.id,
-      required this.userId,
+      @JsonKey(name: 'user_id') required this.userId,
       required this.name,
       required this.phone,
-      required this.rollNumber,
-      this.roomNumber,
-      required this.hostelId,
-      this.hostelName,
-      this.guardianName,
-      this.guardianPhone,
-      this.guardianRelation,
+      @JsonKey(name: 'roll_number') required this.rollNumber,
+      @JsonKey(name: 'room_number') this.roomNumber,
+      @JsonKey(name: 'hostel_id') required this.hostelId,
+      @JsonKey(name: 'hostel_name') this.hostelName,
+      @JsonKey(name: 'guardian_name') this.guardianName,
+      @JsonKey(name: 'guardian_phone') this.guardianPhone,
+      @JsonKey(name: 'guardian_relation') this.guardianRelation,
       this.email,
-      this.profilePhoto,
+      @JsonKey(name: 'profile_photo') this.profilePhoto,
       this.course,
       this.year,
+      @JsonKey(name: 'enrollment_status')
       this.enrollmentStatus = EnrollmentStatus.pending,
+      @JsonKey(name: 'current_status')
       this.currentStatus = StudentStatus.inHostel,
-      this.createdAt});
+      @JsonKey(name: 'created_at') this.createdAt});
 
   factory _$StudentImpl.fromJson(Map<String, dynamic> json) =>
       _$$StudentImplFromJson(json);
@@ -343,40 +357,50 @@ class _$StudentImpl implements _Student {
   @override
   final String id;
   @override
+  @JsonKey(name: 'user_id')
   final String userId;
   @override
   final String name;
   @override
   final String phone;
   @override
+  @JsonKey(name: 'roll_number')
   final String rollNumber;
   @override
+  @JsonKey(name: 'room_number')
   final String? roomNumber;
   @override
+  @JsonKey(name: 'hostel_id')
   final String hostelId;
   @override
+  @JsonKey(name: 'hostel_name')
   final String? hostelName;
   @override
+  @JsonKey(name: 'guardian_name')
   final String? guardianName;
   @override
+  @JsonKey(name: 'guardian_phone')
   final String? guardianPhone;
   @override
+  @JsonKey(name: 'guardian_relation')
   final String? guardianRelation;
   @override
   final String? email;
   @override
+  @JsonKey(name: 'profile_photo')
   final String? profilePhoto;
   @override
   final String? course;
   @override
   final int? year;
   @override
-  @JsonKey()
+  @JsonKey(name: 'enrollment_status')
   final EnrollmentStatus enrollmentStatus;
   @override
-  @JsonKey()
+  @JsonKey(name: 'current_status')
   final StudentStatus currentStatus;
   @override
+  @JsonKey(name: 'created_at')
   final DateTime? createdAt;
 
   @override
@@ -412,8 +436,6 @@ class _$StudentImpl implements _Student {
                 other.profilePhoto == profilePhoto) &&
             (identical(other.course, course) || other.course == course) &&
             (identical(other.year, year) || other.year == year) &&
-            (identical(other.feeReceiptUrl, feeReceiptUrl) ||
-                other.feeReceiptUrl == feeReceiptUrl) &&
             (identical(other.enrollmentStatus, enrollmentStatus) ||
                 other.enrollmentStatus == enrollmentStatus) &&
             (identical(other.currentStatus, currentStatus) ||
@@ -462,61 +484,74 @@ class _$StudentImpl implements _Student {
 abstract class _Student implements Student {
   const factory _Student(
       {required final String id,
-      required final String userId,
+      @JsonKey(name: 'user_id') required final String userId,
       required final String name,
       required final String phone,
-      required final String rollNumber,
-      final String? roomNumber,
-      required final String hostelId,
-      final String? hostelName,
-      final String? guardianName,
-      final String? guardianPhone,
-      final String? guardianRelation,
+      @JsonKey(name: 'roll_number') required final String rollNumber,
+      @JsonKey(name: 'room_number') final String? roomNumber,
+      @JsonKey(name: 'hostel_id') required final String hostelId,
+      @JsonKey(name: 'hostel_name') final String? hostelName,
+      @JsonKey(name: 'guardian_name') final String? guardianName,
+      @JsonKey(name: 'guardian_phone') final String? guardianPhone,
+      @JsonKey(name: 'guardian_relation') final String? guardianRelation,
       final String? email,
-      final String? profilePhoto,
+      @JsonKey(name: 'profile_photo') final String? profilePhoto,
       final String? course,
       final int? year,
+      @JsonKey(name: 'enrollment_status')
       final EnrollmentStatus enrollmentStatus,
-      final StudentStatus currentStatus,
-      final DateTime? createdAt}) = _$StudentImpl;
+      @JsonKey(name: 'current_status') final StudentStatus currentStatus,
+      @JsonKey(name: 'created_at') final DateTime? createdAt}) = _$StudentImpl;
 
   factory _Student.fromJson(Map<String, dynamic> json) = _$StudentImpl.fromJson;
 
   @override
   String get id;
   @override
+  @JsonKey(name: 'user_id')
   String get userId;
   @override
   String get name;
   @override
   String get phone;
   @override
+  @JsonKey(name: 'roll_number')
   String get rollNumber;
   @override
+  @JsonKey(name: 'room_number')
   String? get roomNumber;
   @override
+  @JsonKey(name: 'hostel_id')
   String get hostelId;
   @override
+  @JsonKey(name: 'hostel_name')
   String? get hostelName;
   @override
+  @JsonKey(name: 'guardian_name')
   String? get guardianName;
   @override
+  @JsonKey(name: 'guardian_phone')
   String? get guardianPhone;
   @override
+  @JsonKey(name: 'guardian_relation')
   String? get guardianRelation;
   @override
   String? get email;
   @override
+  @JsonKey(name: 'profile_photo')
   String? get profilePhoto;
   @override
   String? get course;
   @override
   int? get year;
   @override
+  @JsonKey(name: 'enrollment_status')
   EnrollmentStatus get enrollmentStatus;
   @override
+  @JsonKey(name: 'current_status')
   StudentStatus get currentStatus;
   @override
+  @JsonKey(name: 'created_at')
   DateTime? get createdAt;
   @override
   @JsonKey(ignore: true)

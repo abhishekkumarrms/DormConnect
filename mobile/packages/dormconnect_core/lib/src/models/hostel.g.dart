@@ -8,47 +8,65 @@ part of 'hostel.dart';
 
 _$HostelImpl _$$HostelImplFromJson(Map<String, dynamic> json) => _$HostelImpl(
       id: json['id'] as String,
-      institutionId: json['institutionId'] as String,
+      institutionId: json['institution_id'] as String,
       name: json['name'] as String,
       gender: json['gender'] as String?,
-      totalRooms: (json['totalRooms'] as num?)?.toInt(),
-      totalCapacity: (json['totalCapacity'] as num?)?.toInt(),
-      currentOccupancy: (json['currentOccupancy'] as num?)?.toInt(),
-      healthScore: (json['healthScore'] as num?)?.toDouble(),
-      createdAt: json['createdAt'] == null
+      totalRooms: (json['total_rooms'] as num?)?.toInt(),
+      totalCapacity: (json['total_capacity'] as num?)?.toInt(),
+      currentOccupancy: (json['current_occupancy'] as num?)?.toInt(),
+      healthScore: (json['health_score'] as num?)?.toDouble(),
+      createdAt: json['created_at'] == null
           ? null
-          : DateTime.parse(json['createdAt'] as String),
+          : DateTime.parse(json['created_at'] as String),
     );
 
-Map<String, dynamic> _$$HostelImplToJson(_$HostelImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'institutionId': instance.institutionId,
-      'name': instance.name,
-      'gender': instance.gender,
-      'totalRooms': instance.totalRooms,
-      'totalCapacity': instance.totalCapacity,
-      'currentOccupancy': instance.currentOccupancy,
-      'healthScore': instance.healthScore,
-      'createdAt': instance.createdAt?.toIso8601String(),
-    };
+Map<String, dynamic> _$$HostelImplToJson(_$HostelImpl instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'institution_id': instance.institutionId,
+    'name': instance.name,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('gender', instance.gender);
+  writeNotNull('total_rooms', instance.totalRooms);
+  writeNotNull('total_capacity', instance.totalCapacity);
+  writeNotNull('current_occupancy', instance.currentOccupancy);
+  writeNotNull('health_score', instance.healthScore);
+  writeNotNull('created_at', instance.createdAt?.toIso8601String());
+  return val;
+}
 
 _$InstitutionImpl _$$InstitutionImplFromJson(Map<String, dynamic> json) =>
     _$InstitutionImpl(
       id: json['id'] as String,
       name: json['name'] as String,
       address: json['address'] as String?,
-      logoUrl: json['logoUrl'] as String?,
-      createdAt: json['createdAt'] == null
+      logoUrl: json['logo_url'] as String?,
+      createdAt: json['created_at'] == null
           ? null
-          : DateTime.parse(json['createdAt'] as String),
+          : DateTime.parse(json['created_at'] as String),
     );
 
-Map<String, dynamic> _$$InstitutionImplToJson(_$InstitutionImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'address': instance.address,
-      'logoUrl': instance.logoUrl,
-      'createdAt': instance.createdAt?.toIso8601String(),
-    };
+Map<String, dynamic> _$$InstitutionImplToJson(_$InstitutionImpl instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'name': instance.name,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('address', instance.address);
+  writeNotNull('logo_url', instance.logoUrl);
+  writeNotNull('created_at', instance.createdAt?.toIso8601String());
+  return val;
+}

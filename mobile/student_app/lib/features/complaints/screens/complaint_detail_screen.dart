@@ -12,12 +12,10 @@ class ComplaintDetailScreen extends ConsumerWidget {
 
   static const _categoryIcons = {
     'food': Icons.restaurant_outlined,
-    'cleaning': Icons.cleaning_services_outlined,
+    'staffBehavior': Icons.person_off_outlined,
     'security': Icons.security_outlined,
-    'electrical': Icons.electrical_services_outlined,
-    'internet': Icons.wifi_outlined,
-    'furniture': Icons.chair_outlined,
-    'plumbing': Icons.water_drop_outlined,
+    'environment': Icons.nature_outlined,
+    'ragging': Icons.report_problem_outlined,
     'other': Icons.more_horiz_rounded,
   };
 

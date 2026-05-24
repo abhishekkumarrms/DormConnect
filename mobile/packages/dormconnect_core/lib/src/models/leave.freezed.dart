@@ -21,7 +21,7 @@ LeaveApplication _$LeaveApplicationFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$LeaveApplication {
   String get id => throw _privateConstructorUsedError;
-  String get studentId => throw _privateConstructorUsedError;
+  String? get studentId => throw _privateConstructorUsedError;
   String? get studentName => throw _privateConstructorUsedError;
   String? get hostelId => throw _privateConstructorUsedError;
   LeaveType get leaveType => throw _privateConstructorUsedError;
@@ -50,7 +50,7 @@ abstract class $LeaveApplicationCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String studentId,
+      String? studentId,
       String? studentName,
       String? hostelId,
       LeaveType leaveType,
@@ -80,7 +80,7 @@ class _$LeaveApplicationCopyWithImpl<$Res, $Val extends LeaveApplication>
   @override
   $Res call({
     Object? id = null,
-    Object? studentId = null,
+    Object? studentId = freezed,
     Object? studentName = freezed,
     Object? hostelId = freezed,
     Object? leaveType = null,
@@ -100,10 +100,10 @@ class _$LeaveApplicationCopyWithImpl<$Res, $Val extends LeaveApplication>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      studentId: null == studentId
+      studentId: freezed == studentId
           ? _value.studentId
           : studentId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       studentName: freezed == studentName
           ? _value.studentName
           : studentName // ignore: cast_nullable_to_non_nullable
@@ -170,7 +170,7 @@ abstract class _$$LeaveApplicationImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      String studentId,
+      String? studentId,
       String? studentName,
       String? hostelId,
       LeaveType leaveType,
@@ -198,7 +198,7 @@ class __$$LeaveApplicationImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? studentId = null,
+    Object? studentId = freezed,
     Object? studentName = freezed,
     Object? hostelId = freezed,
     Object? leaveType = null,
@@ -218,10 +218,10 @@ class __$$LeaveApplicationImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      studentId: null == studentId
+      studentId: freezed == studentId
           ? _value.studentId
           : studentId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       studentName: freezed == studentName
           ? _value.studentName
           : studentName // ignore: cast_nullable_to_non_nullable
@@ -283,7 +283,7 @@ class __$$LeaveApplicationImplCopyWithImpl<$Res>
 class _$LeaveApplicationImpl implements _LeaveApplication {
   const _$LeaveApplicationImpl(
       {required this.id,
-      required this.studentId,
+      this.studentId,
       this.studentName,
       this.hostelId,
       required this.leaveType,
@@ -304,7 +304,7 @@ class _$LeaveApplicationImpl implements _LeaveApplication {
   @override
   final String id;
   @override
-  final String studentId;
+  final String? studentId;
   @override
   final String? studentName;
   @override
@@ -409,7 +409,7 @@ class _$LeaveApplicationImpl implements _LeaveApplication {
 abstract class _LeaveApplication implements LeaveApplication {
   const factory _LeaveApplication(
       {required final String id,
-      required final String studentId,
+      final String? studentId,
       final String? studentName,
       final String? hostelId,
       required final LeaveType leaveType,
@@ -430,7 +430,7 @@ abstract class _LeaveApplication implements LeaveApplication {
   @override
   String get id;
   @override
-  String get studentId;
+  String? get studentId;
   @override
   String? get studentName;
   @override

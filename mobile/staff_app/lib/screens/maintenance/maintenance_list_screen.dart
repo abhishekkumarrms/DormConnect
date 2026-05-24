@@ -65,7 +65,7 @@ class _MaintCard extends StatelessWidget {
               DcBadge(label: m.status.name),
             ]),
             const SizedBox(height: 8),
-            Text(m.title,
+            Text(m.title ?? m.category.name.snakeToTitle,
                 style: const TextStyle(fontWeight: FontWeight.w600)),
             const SizedBox(height: 4),
             Text(m.description,

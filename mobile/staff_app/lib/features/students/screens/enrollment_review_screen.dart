@@ -107,7 +107,7 @@ class _EnrollmentReviewScreenState
                     await ref.read(studentApiProvider).reject(
                         student.id, reason: _rejectReasonCtrl.text.trim());
                     if (mounted) {
-                      DcSnackbar.info(context, 'Enrollment rejected.');
+                      DcSnackbar.show(context, 'Enrollment rejected.');
                       context.go('/home/students');
                     }
                   } catch (e) {

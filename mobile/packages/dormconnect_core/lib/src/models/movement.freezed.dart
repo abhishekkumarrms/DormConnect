@@ -21,7 +21,7 @@ MovementLog _$MovementLogFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$MovementLog {
   String get id => throw _privateConstructorUsedError;
-  String get studentId => throw _privateConstructorUsedError;
+  String? get studentId => throw _privateConstructorUsedError;
   String? get studentName => throw _privateConstructorUsedError;
   String? get roomNumber => throw _privateConstructorUsedError;
   String? get photoUrl => throw _privateConstructorUsedError;
@@ -48,7 +48,7 @@ abstract class $MovementLogCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String studentId,
+      String? studentId,
       String? studentName,
       String? roomNumber,
       String? photoUrl,
@@ -76,7 +76,7 @@ class _$MovementLogCopyWithImpl<$Res, $Val extends MovementLog>
   @override
   $Res call({
     Object? id = null,
-    Object? studentId = null,
+    Object? studentId = freezed,
     Object? studentName = freezed,
     Object? roomNumber = freezed,
     Object? photoUrl = freezed,
@@ -94,10 +94,10 @@ class _$MovementLogCopyWithImpl<$Res, $Val extends MovementLog>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      studentId: null == studentId
+      studentId: freezed == studentId
           ? _value.studentId
           : studentId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       studentName: freezed == studentName
           ? _value.studentName
           : studentName // ignore: cast_nullable_to_non_nullable
@@ -156,7 +156,7 @@ abstract class _$$MovementLogImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      String studentId,
+      String? studentId,
       String? studentName,
       String? roomNumber,
       String? photoUrl,
@@ -182,7 +182,7 @@ class __$$MovementLogImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? studentId = null,
+    Object? studentId = freezed,
     Object? studentName = freezed,
     Object? roomNumber = freezed,
     Object? photoUrl = freezed,
@@ -200,10 +200,10 @@ class __$$MovementLogImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      studentId: null == studentId
+      studentId: freezed == studentId
           ? _value.studentId
           : studentId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       studentName: freezed == studentName
           ? _value.studentName
           : studentName // ignore: cast_nullable_to_non_nullable
@@ -257,7 +257,7 @@ class __$$MovementLogImplCopyWithImpl<$Res>
 class _$MovementLogImpl implements _MovementLog {
   const _$MovementLogImpl(
       {required this.id,
-      required this.studentId,
+      this.studentId,
       this.studentName,
       this.roomNumber,
       this.photoUrl,
@@ -276,7 +276,7 @@ class _$MovementLogImpl implements _MovementLog {
   @override
   final String id;
   @override
-  final String studentId;
+  final String? studentId;
   @override
   final String? studentName;
   @override
@@ -372,7 +372,7 @@ class _$MovementLogImpl implements _MovementLog {
 abstract class _MovementLog implements MovementLog {
   const factory _MovementLog(
       {required final String id,
-      required final String studentId,
+      final String? studentId,
       final String? studentName,
       final String? roomNumber,
       final String? photoUrl,
@@ -391,7 +391,7 @@ abstract class _MovementLog implements MovementLog {
   @override
   String get id;
   @override
-  String get studentId;
+  String? get studentId;
   @override
   String? get studentName;
   @override

@@ -64,7 +64,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           phone: state.uri.queryParameters['phone'] ?? '',
         ),
       ),
-      GoRoute(path: '/auth/enroll', builder: (_, __) => const EnrollmentScreen()),
+      GoRoute(path: '/auth/enroll', builder: (_, state) => EnrollmentScreen(phone: state.uri.queryParameters['phone'] ?? '')),
       GoRoute(path: '/auth/pending', builder: (_, __) => const PendingApprovalScreen()),
 
       ShellRoute(

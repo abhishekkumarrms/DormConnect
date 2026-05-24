@@ -437,9 +437,10 @@ class _BroadcastRow extends StatelessWidget {
                         fontWeight: FontWeight.w600, fontSize: 13),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
-                Text(broadcast.sentByName,
-                    style: const TextStyle(
-                        color: AppColors.textTertiary, fontSize: 11)),
+                if (broadcast.sentByName != null)
+                  Text(broadcast.sentByName!,
+                      style: const TextStyle(
+                          color: AppColors.textTertiary, fontSize: 11)),
               ],
             ),
           ),

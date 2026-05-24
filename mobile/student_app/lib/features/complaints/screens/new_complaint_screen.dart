@@ -17,18 +17,16 @@ class NewComplaintScreen extends ConsumerStatefulWidget {
 class _NewComplaintScreenState extends ConsumerState<NewComplaintScreen> {
   final _descCtrl = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  ComplaintCategory _category = ComplaintCategory.other;
+  ComplaintCategory _category = ComplaintCategory.food;
   File? _photo;
   bool _loading = false;
 
   static const _categories = [
     (cat: ComplaintCategory.food, icon: Icons.restaurant_outlined, label: 'Food'),
-    (cat: ComplaintCategory.cleaning, icon: Icons.cleaning_services_outlined, label: 'Cleaning'),
+    (cat: ComplaintCategory.staffBehavior, icon: Icons.person_off_outlined, label: 'Staff'),
     (cat: ComplaintCategory.security, icon: Icons.security_outlined, label: 'Security'),
-    (cat: ComplaintCategory.electrical, icon: Icons.electrical_services_outlined, label: 'Electrical'),
-    (cat: ComplaintCategory.internet, icon: Icons.wifi_outlined, label: 'Internet'),
-    (cat: ComplaintCategory.furniture, icon: Icons.chair_outlined, label: 'Furniture'),
-    (cat: ComplaintCategory.plumbing, icon: Icons.water_drop_outlined, label: 'Plumbing'),
+    (cat: ComplaintCategory.environment, icon: Icons.nature_outlined, label: 'Environment'),
+    (cat: ComplaintCategory.ragging, icon: Icons.report_problem_outlined, label: 'Ragging'),
     (cat: ComplaintCategory.other, icon: Icons.more_horiz_rounded, label: 'Other'),
   ];
 

@@ -228,13 +228,11 @@ class _Step1 extends StatelessWidget {
             const SizedBox(height: 14),
             DcTextField(
                 label: 'Full Name *',
-                controller: nameCtrl,
-                textCapitalization: TextCapitalization.words),
+                controller: nameCtrl),
             const SizedBox(height: 14),
             DcTextField(
                 label: 'Roll Number *',
-                controller: rollCtrl,
-                textCapitalization: TextCapitalization.characters),
+                controller: rollCtrl),
             const SizedBox(height: 14),
             hostelsAsync.when(
               loading: () => const DcLoading(),
@@ -303,8 +301,7 @@ class _Step2 extends StatelessWidget {
             const SizedBox(height: 20),
             DcTextField(
                 label: 'Guardian Name *',
-                controller: nameCtrl,
-                textCapitalization: TextCapitalization.words),
+                controller: nameCtrl),
             const SizedBox(height: 14),
             DcTextField(
                 label: 'Guardian Phone *',

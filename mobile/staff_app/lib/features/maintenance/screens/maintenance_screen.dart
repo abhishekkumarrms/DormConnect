@@ -150,12 +150,13 @@ class _MaintenanceCard extends StatelessWidget {
                           color: AppColors.textSecondary,
                           fontSize: 12),
                     ),
-                  Text(request.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          color: AppColors.textTertiary,
-                          fontSize: 11)),
+                  if (request.title != null)
+                    Text(request.title!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            color: AppColors.textTertiary,
+                            fontSize: 11)),
                 ],
               ),
             ),

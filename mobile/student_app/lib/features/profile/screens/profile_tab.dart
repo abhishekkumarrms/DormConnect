@@ -180,10 +180,7 @@ class ProfileTab extends ConsumerWidget {
                     DcButton(
                       label: 'Logout',
                       onPressed: () async {
-                        await ref.read(authApiProvider).logout();
-                        if (context.mounted) {
-                          context.go('/auth/phone');
-                        }
+                        await ref.read(authProvider.notifier).logout();
                       },
                       color: AppColors.error,
                     ),

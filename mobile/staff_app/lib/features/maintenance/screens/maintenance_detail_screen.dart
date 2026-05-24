@@ -47,7 +47,7 @@ class MaintenanceDetailScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(req.title,
+                          Text(req.title ?? req.category.name.snakeToTitle,
                               style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 15)),

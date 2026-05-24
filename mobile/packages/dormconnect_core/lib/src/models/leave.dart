@@ -3,14 +3,26 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'leave.freezed.dart';
 part 'leave.g.dart';
 
-enum LeaveType { home, medical, personal, academic }
-enum LeaveStatus { submitted, underReview, guardianContacted, approved, rejected }
+enum LeaveType {
+  @JsonValue('HOME') home,
+  @JsonValue('MEDICAL') medical,
+  @JsonValue('PERSONAL') personal,
+  @JsonValue('ACADEMIC') academic,
+}
+
+enum LeaveStatus {
+  @JsonValue('SUBMITTED') submitted,
+  @JsonValue('UNDER_REVIEW') underReview,
+  @JsonValue('GUARDIAN_CONTACTED') guardianContacted,
+  @JsonValue('APPROVED') approved,
+  @JsonValue('REJECTED') rejected,
+}
 
 @freezed
 class LeaveApplication with _$LeaveApplication {
   const factory LeaveApplication({
     required String id,
-    required String studentId,
+    String? studentId,
     String? studentName,
     String? hostelId,
     required LeaveType leaveType,

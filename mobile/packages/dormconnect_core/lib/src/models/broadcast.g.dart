@@ -12,30 +12,39 @@ _$BroadcastImpl _$$BroadcastImplFromJson(Map<String, dynamic> json) =>
       title: json['title'] as String,
       body: json['body'] as String,
       category: $enumDecode(_$BroadcastCategoryEnumMap, json['category']),
-      sentByName: json['sentByName'] as String,
-      hostelId: json['hostelId'] as String?,
-      createdAt: json['createdAt'] == null
+      sentByName: json['sent_by_name'] as String?,
+      hostelId: json['hostel_id'] as String?,
+      createdAt: json['created_at'] == null
           ? null
-          : DateTime.parse(json['createdAt'] as String),
+          : DateTime.parse(json['created_at'] as String),
     );
 
-Map<String, dynamic> _$$BroadcastImplToJson(_$BroadcastImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'body': instance.body,
-      'category': _$BroadcastCategoryEnumMap[instance.category]!,
-      'sentByName': instance.sentByName,
-      'hostelId': instance.hostelId,
-      'createdAt': instance.createdAt?.toIso8601String(),
-    };
+Map<String, dynamic> _$$BroadcastImplToJson(_$BroadcastImpl instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'title': instance.title,
+    'body': instance.body,
+    'category': _$BroadcastCategoryEnumMap[instance.category]!,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('sent_by_name', instance.sentByName);
+  writeNotNull('hostel_id', instance.hostelId);
+  writeNotNull('created_at', instance.createdAt?.toIso8601String());
+  return val;
+}
 
 const _$BroadcastCategoryEnumMap = {
-  BroadcastCategory.general: 'general',
-  BroadcastCategory.important: 'important',
-  BroadcastCategory.mess: 'mess',
-  BroadcastCategory.holiday: 'holiday',
-  BroadcastCategory.event: 'event',
+  BroadcastCategory.general: 'GENERAL',
+  BroadcastCategory.important: 'IMPORTANT',
+  BroadcastCategory.mess: 'MESS',
+  BroadcastCategory.holiday: 'HOLIDAY',
+  BroadcastCategory.event: 'EVENT',
 };
 
 _$NoticeImpl _$$NoticeImplFromJson(Map<String, dynamic> json) => _$NoticeImpl(
@@ -43,26 +52,35 @@ _$NoticeImpl _$$NoticeImplFromJson(Map<String, dynamic> json) => _$NoticeImpl(
       title: json['title'] as String,
       body: json['body'] as String,
       category: json['category'] as String?,
-      isPinned: json['isPinned'] as bool? ?? false,
-      postedByName: json['postedByName'] as String,
-      hostelId: json['hostelId'] as String?,
-      createdAt: json['createdAt'] == null
+      isPinned: json['is_pinned'] as bool? ?? false,
+      postedByName: json['posted_by_name'] as String?,
+      hostelId: json['hostel_id'] as String?,
+      createdAt: json['created_at'] == null
           ? null
-          : DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] == null
+          : DateTime.parse(json['created_at'] as String),
+      updatedAt: json['updated_at'] == null
           ? null
-          : DateTime.parse(json['updatedAt'] as String),
+          : DateTime.parse(json['updated_at'] as String),
     );
 
-Map<String, dynamic> _$$NoticeImplToJson(_$NoticeImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'body': instance.body,
-      'category': instance.category,
-      'isPinned': instance.isPinned,
-      'postedByName': instance.postedByName,
-      'hostelId': instance.hostelId,
-      'createdAt': instance.createdAt?.toIso8601String(),
-      'updatedAt': instance.updatedAt?.toIso8601String(),
-    };
+Map<String, dynamic> _$$NoticeImplToJson(_$NoticeImpl instance) {
+  final val = <String, dynamic>{
+    'id': instance.id,
+    'title': instance.title,
+    'body': instance.body,
+  };
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('category', instance.category);
+  val['is_pinned'] = instance.isPinned;
+  writeNotNull('posted_by_name', instance.postedByName);
+  writeNotNull('hostel_id', instance.hostelId);
+  writeNotNull('created_at', instance.createdAt?.toIso8601String());
+  writeNotNull('updated_at', instance.updatedAt?.toIso8601String());
+  return val;
+}

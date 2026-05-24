@@ -24,7 +24,7 @@ mixin _$Broadcast {
   String get title => throw _privateConstructorUsedError;
   String get body => throw _privateConstructorUsedError;
   BroadcastCategory get category => throw _privateConstructorUsedError;
-  String get sentByName => throw _privateConstructorUsedError;
+  String? get sentByName => throw _privateConstructorUsedError;
   String? get hostelId => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
 
@@ -44,7 +44,7 @@ abstract class $BroadcastCopyWith<$Res> {
       String title,
       String body,
       BroadcastCategory category,
-      String sentByName,
+      String? sentByName,
       String? hostelId,
       DateTime? createdAt});
 }
@@ -66,7 +66,7 @@ class _$BroadcastCopyWithImpl<$Res, $Val extends Broadcast>
     Object? title = null,
     Object? body = null,
     Object? category = null,
-    Object? sentByName = null,
+    Object? sentByName = freezed,
     Object? hostelId = freezed,
     Object? createdAt = freezed,
   }) {
@@ -87,10 +87,10 @@ class _$BroadcastCopyWithImpl<$Res, $Val extends Broadcast>
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as BroadcastCategory,
-      sentByName: null == sentByName
+      sentByName: freezed == sentByName
           ? _value.sentByName
           : sentByName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       hostelId: freezed == hostelId
           ? _value.hostelId
           : hostelId // ignore: cast_nullable_to_non_nullable
@@ -116,7 +116,7 @@ abstract class _$$BroadcastImplCopyWith<$Res>
       String title,
       String body,
       BroadcastCategory category,
-      String sentByName,
+      String? sentByName,
       String? hostelId,
       DateTime? createdAt});
 }
@@ -136,7 +136,7 @@ class __$$BroadcastImplCopyWithImpl<$Res>
     Object? title = null,
     Object? body = null,
     Object? category = null,
-    Object? sentByName = null,
+    Object? sentByName = freezed,
     Object? hostelId = freezed,
     Object? createdAt = freezed,
   }) {
@@ -157,10 +157,10 @@ class __$$BroadcastImplCopyWithImpl<$Res>
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as BroadcastCategory,
-      sentByName: null == sentByName
+      sentByName: freezed == sentByName
           ? _value.sentByName
           : sentByName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       hostelId: freezed == hostelId
           ? _value.hostelId
           : hostelId // ignore: cast_nullable_to_non_nullable
@@ -181,7 +181,7 @@ class _$BroadcastImpl implements _Broadcast {
       required this.title,
       required this.body,
       required this.category,
-      required this.sentByName,
+      this.sentByName,
       this.hostelId,
       this.createdAt});
 
@@ -197,7 +197,7 @@ class _$BroadcastImpl implements _Broadcast {
   @override
   final BroadcastCategory category;
   @override
-  final String sentByName;
+  final String? sentByName;
   @override
   final String? hostelId;
   @override
@@ -251,7 +251,7 @@ abstract class _Broadcast implements Broadcast {
       required final String title,
       required final String body,
       required final BroadcastCategory category,
-      required final String sentByName,
+      final String? sentByName,
       final String? hostelId,
       final DateTime? createdAt}) = _$BroadcastImpl;
 
@@ -267,7 +267,7 @@ abstract class _Broadcast implements Broadcast {
   @override
   BroadcastCategory get category;
   @override
-  String get sentByName;
+  String? get sentByName;
   @override
   String? get hostelId;
   @override
@@ -289,7 +289,7 @@ mixin _$Notice {
   String get body => throw _privateConstructorUsedError;
   String? get category => throw _privateConstructorUsedError;
   bool get isPinned => throw _privateConstructorUsedError;
-  String get postedByName => throw _privateConstructorUsedError;
+  String? get postedByName => throw _privateConstructorUsedError;
   String? get hostelId => throw _privateConstructorUsedError;
   DateTime? get createdAt => throw _privateConstructorUsedError;
   DateTime? get updatedAt => throw _privateConstructorUsedError;
@@ -310,7 +310,7 @@ abstract class $NoticeCopyWith<$Res> {
       String body,
       String? category,
       bool isPinned,
-      String postedByName,
+      String? postedByName,
       String? hostelId,
       DateTime? createdAt,
       DateTime? updatedAt});
@@ -334,7 +334,7 @@ class _$NoticeCopyWithImpl<$Res, $Val extends Notice>
     Object? body = null,
     Object? category = freezed,
     Object? isPinned = null,
-    Object? postedByName = null,
+    Object? postedByName = freezed,
     Object? hostelId = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
@@ -360,10 +360,10 @@ class _$NoticeCopyWithImpl<$Res, $Val extends Notice>
           ? _value.isPinned
           : isPinned // ignore: cast_nullable_to_non_nullable
               as bool,
-      postedByName: null == postedByName
+      postedByName: freezed == postedByName
           ? _value.postedByName
           : postedByName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       hostelId: freezed == hostelId
           ? _value.hostelId
           : hostelId // ignore: cast_nullable_to_non_nullable
@@ -393,7 +393,7 @@ abstract class _$$NoticeImplCopyWith<$Res> implements $NoticeCopyWith<$Res> {
       String body,
       String? category,
       bool isPinned,
-      String postedByName,
+      String? postedByName,
       String? hostelId,
       DateTime? createdAt,
       DateTime? updatedAt});
@@ -415,7 +415,7 @@ class __$$NoticeImplCopyWithImpl<$Res>
     Object? body = null,
     Object? category = freezed,
     Object? isPinned = null,
-    Object? postedByName = null,
+    Object? postedByName = freezed,
     Object? hostelId = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
@@ -441,10 +441,10 @@ class __$$NoticeImplCopyWithImpl<$Res>
           ? _value.isPinned
           : isPinned // ignore: cast_nullable_to_non_nullable
               as bool,
-      postedByName: null == postedByName
+      postedByName: freezed == postedByName
           ? _value.postedByName
           : postedByName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       hostelId: freezed == hostelId
           ? _value.hostelId
           : hostelId // ignore: cast_nullable_to_non_nullable
@@ -470,7 +470,7 @@ class _$NoticeImpl implements _Notice {
       required this.body,
       this.category,
       this.isPinned = false,
-      required this.postedByName,
+      this.postedByName,
       this.hostelId,
       this.createdAt,
       this.updatedAt});
@@ -490,7 +490,7 @@ class _$NoticeImpl implements _Notice {
   @JsonKey()
   final bool isPinned;
   @override
-  final String postedByName;
+  final String? postedByName;
   @override
   final String? hostelId;
   @override
@@ -551,7 +551,7 @@ abstract class _Notice implements Notice {
       required final String body,
       final String? category,
       final bool isPinned,
-      required final String postedByName,
+      final String? postedByName,
       final String? hostelId,
       final DateTime? createdAt,
       final DateTime? updatedAt}) = _$NoticeImpl;
@@ -569,7 +569,7 @@ abstract class _Notice implements Notice {
   @override
   bool get isPinned;
   @override
-  String get postedByName;
+  String? get postedByName;
   @override
   String? get hostelId;
   @override

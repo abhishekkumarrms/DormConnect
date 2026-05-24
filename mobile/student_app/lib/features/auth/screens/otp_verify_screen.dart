@@ -65,12 +65,18 @@ class _OtpVerifyScreenState extends ConsumerState<OtpVerifyScreen> {
     if (ok) {
       // Router redirect handles navigation based on auth state
     } else {
-      final err = ref.read(authProvider).error;
-      DcSnackbar.error(context, err ?? 'Invalid OTP');
-      for (final c in _ctrls) {
-        c.clear();
+      final err = ref.read(authProvider).error ?? '';
+      final notFound = err.toLowerCase().contains('not found') ||
+          err.toLowerCase().contains('user not found');
+      if (notFound) {
+        context.go('/auth/enroll?phone=${Uri.encodeComponent(widget.phone)}');
+      } else {
+        DcSnackbar.error(context, err.isNotEmpty ? err : 'Invalid OTP');
+        for (final c in _ctrls) {
+          c.clear();
+        }
+        _nodes[0].requestFocus();
       }
-      _nodes[0].requestFocus();
     }
   }
 

@@ -18,10 +18,9 @@ class _PendingApprovalScreenState extends ConsumerState<PendingApprovalScreen> {
       final student = await ref.read(studentApiProvider).getProfile();
       if (!mounted) return;
       if (student.enrollmentStatus == EnrollmentStatus.active) {
-        // Refresh auth state — router will redirect to home
-        await ref.read(authProvider.notifier).refresh();
+        ref.invalidate(authProvider);
       } else {
-        DcSnackbar.info(context, 'Not approved yet. Please visit the caretaker office.');
+        DcSnackbar.show(context, 'Not approved yet. Please visit the caretaker office.');
       }
     } catch (_) {
       if (mounted) DcSnackbar.error(context, 'Could not check status. Try again.');

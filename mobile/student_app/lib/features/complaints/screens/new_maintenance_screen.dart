@@ -25,12 +25,11 @@ class _NewMaintenanceScreenState
   bool _loading = false;
 
   static const _categories = [
-    (cat: MaintenanceCategory.plumbing, icon: Icons.water_drop_outlined, label: 'Plumbing'),
     (cat: MaintenanceCategory.electrical, icon: Icons.electrical_services_outlined, label: 'Electrical'),
-    (cat: MaintenanceCategory.carpentry, icon: Icons.handyman_outlined, label: 'Carpentry'),
-    (cat: MaintenanceCategory.painting, icon: Icons.format_paint_outlined, label: 'Painting'),
-    (cat: MaintenanceCategory.civil, icon: Icons.foundation_outlined, label: 'Civil'),
-    (cat: MaintenanceCategory.appliance, icon: Icons.kitchen_outlined, label: 'Appliance'),
+    (cat: MaintenanceCategory.plumbing, icon: Icons.water_drop_outlined, label: 'Plumbing'),
+    (cat: MaintenanceCategory.furniture, icon: Icons.chair_outlined, label: 'Furniture'),
+    (cat: MaintenanceCategory.internet, icon: Icons.wifi_outlined, label: 'Internet'),
+    (cat: MaintenanceCategory.cleanliness, icon: Icons.cleaning_services_outlined, label: 'Cleaning'),
     (cat: MaintenanceCategory.other, icon: Icons.build_outlined, label: 'Other'),
   ];
 

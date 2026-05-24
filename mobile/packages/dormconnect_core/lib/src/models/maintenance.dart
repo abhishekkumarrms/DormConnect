@@ -4,24 +4,34 @@ part 'maintenance.freezed.dart';
 part 'maintenance.g.dart';
 
 enum MaintenanceCategory {
-  electrical, plumbing, carpentry, painting, civil, appliance, other
+  @JsonValue('ELECTRICAL') electrical,
+  @JsonValue('PLUMBING') plumbing,
+  @JsonValue('FURNITURE') furniture,
+  @JsonValue('INTERNET') internet,
+  @JsonValue('CLEANLINESS') cleanliness,
+  @JsonValue('OTHER') other,
 }
 
 enum MaintenanceStatus {
-  submitted, assigned, scheduled, inProgress, fixed, cannotFix
+  @JsonValue('SUBMITTED') submitted,
+  @JsonValue('ASSIGNED') assigned,
+  @JsonValue('SCHEDULED') scheduled,
+  @JsonValue('IN_PROGRESS') inProgress,
+  @JsonValue('FIXED') fixed,
+  @JsonValue('CANNOT_FIX') cannotFix,
 }
 
 @freezed
 class MaintenanceRequest with _$MaintenanceRequest {
   const factory MaintenanceRequest({
     required String id,
-    required String hostelId,
-    required String reportedById,
+    String? hostelId,
+    String? reportedById,
     String? reportedByName,
     String? roomNumber,
     required MaintenanceCategory category,
     required MaintenanceStatus status,
-    required String title,
+    String? title,
     required String description,
     String? location,
     String? assignedToName,

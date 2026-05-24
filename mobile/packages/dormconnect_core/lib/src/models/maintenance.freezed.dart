@@ -21,13 +21,13 @@ MaintenanceRequest _$MaintenanceRequestFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$MaintenanceRequest {
   String get id => throw _privateConstructorUsedError;
-  String get hostelId => throw _privateConstructorUsedError;
-  String get reportedById => throw _privateConstructorUsedError;
+  String? get hostelId => throw _privateConstructorUsedError;
+  String? get reportedById => throw _privateConstructorUsedError;
   String? get reportedByName => throw _privateConstructorUsedError;
   String? get roomNumber => throw _privateConstructorUsedError;
   MaintenanceCategory get category => throw _privateConstructorUsedError;
   MaintenanceStatus get status => throw _privateConstructorUsedError;
-  String get title => throw _privateConstructorUsedError;
+  String? get title => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String? get location => throw _privateConstructorUsedError;
   String? get assignedToName => throw _privateConstructorUsedError;
@@ -51,13 +51,13 @@ abstract class $MaintenanceRequestCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String hostelId,
-      String reportedById,
+      String? hostelId,
+      String? reportedById,
       String? reportedByName,
       String? roomNumber,
       MaintenanceCategory category,
       MaintenanceStatus status,
-      String title,
+      String? title,
       String description,
       String? location,
       String? assignedToName,
@@ -82,13 +82,13 @@ class _$MaintenanceRequestCopyWithImpl<$Res, $Val extends MaintenanceRequest>
   @override
   $Res call({
     Object? id = null,
-    Object? hostelId = null,
-    Object? reportedById = null,
+    Object? hostelId = freezed,
+    Object? reportedById = freezed,
     Object? reportedByName = freezed,
     Object? roomNumber = freezed,
     Object? category = null,
     Object? status = null,
-    Object? title = null,
+    Object? title = freezed,
     Object? description = null,
     Object? location = freezed,
     Object? assignedToName = freezed,
@@ -103,14 +103,14 @@ class _$MaintenanceRequestCopyWithImpl<$Res, $Val extends MaintenanceRequest>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      hostelId: null == hostelId
+      hostelId: freezed == hostelId
           ? _value.hostelId
           : hostelId // ignore: cast_nullable_to_non_nullable
-              as String,
-      reportedById: null == reportedById
+              as String?,
+      reportedById: freezed == reportedById
           ? _value.reportedById
           : reportedById // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       reportedByName: freezed == reportedByName
           ? _value.reportedByName
           : reportedByName // ignore: cast_nullable_to_non_nullable
@@ -127,10 +127,10 @@ class _$MaintenanceRequestCopyWithImpl<$Res, $Val extends MaintenanceRequest>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as MaintenanceStatus,
-      title: null == title
+      title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -177,13 +177,13 @@ abstract class _$$MaintenanceRequestImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      String hostelId,
-      String reportedById,
+      String? hostelId,
+      String? reportedById,
       String? reportedByName,
       String? roomNumber,
       MaintenanceCategory category,
       MaintenanceStatus status,
-      String title,
+      String? title,
       String description,
       String? location,
       String? assignedToName,
@@ -206,13 +206,13 @@ class __$$MaintenanceRequestImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? hostelId = null,
-    Object? reportedById = null,
+    Object? hostelId = freezed,
+    Object? reportedById = freezed,
     Object? reportedByName = freezed,
     Object? roomNumber = freezed,
     Object? category = null,
     Object? status = null,
-    Object? title = null,
+    Object? title = freezed,
     Object? description = null,
     Object? location = freezed,
     Object? assignedToName = freezed,
@@ -227,14 +227,14 @@ class __$$MaintenanceRequestImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      hostelId: null == hostelId
+      hostelId: freezed == hostelId
           ? _value.hostelId
           : hostelId // ignore: cast_nullable_to_non_nullable
-              as String,
-      reportedById: null == reportedById
+              as String?,
+      reportedById: freezed == reportedById
           ? _value.reportedById
           : reportedById // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       reportedByName: freezed == reportedByName
           ? _value.reportedByName
           : reportedByName // ignore: cast_nullable_to_non_nullable
@@ -251,10 +251,10 @@ class __$$MaintenanceRequestImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as MaintenanceStatus,
-      title: null == title
+      title: freezed == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -296,13 +296,13 @@ class __$$MaintenanceRequestImplCopyWithImpl<$Res>
 class _$MaintenanceRequestImpl implements _MaintenanceRequest {
   const _$MaintenanceRequestImpl(
       {required this.id,
-      required this.hostelId,
-      required this.reportedById,
+      this.hostelId,
+      this.reportedById,
       this.reportedByName,
       this.roomNumber,
       required this.category,
       required this.status,
-      required this.title,
+      this.title,
       required this.description,
       this.location,
       this.assignedToName,
@@ -318,9 +318,9 @@ class _$MaintenanceRequestImpl implements _MaintenanceRequest {
   @override
   final String id;
   @override
-  final String hostelId;
+  final String? hostelId;
   @override
-  final String reportedById;
+  final String? reportedById;
   @override
   final String? reportedByName;
   @override
@@ -330,7 +330,7 @@ class _$MaintenanceRequestImpl implements _MaintenanceRequest {
   @override
   final MaintenanceStatus status;
   @override
-  final String title;
+  final String? title;
   @override
   final String description;
   @override
@@ -428,13 +428,13 @@ class _$MaintenanceRequestImpl implements _MaintenanceRequest {
 abstract class _MaintenanceRequest implements MaintenanceRequest {
   const factory _MaintenanceRequest(
       {required final String id,
-      required final String hostelId,
-      required final String reportedById,
+      final String? hostelId,
+      final String? reportedById,
       final String? reportedByName,
       final String? roomNumber,
       required final MaintenanceCategory category,
       required final MaintenanceStatus status,
-      required final String title,
+      final String? title,
       required final String description,
       final String? location,
       final String? assignedToName,
@@ -450,9 +450,9 @@ abstract class _MaintenanceRequest implements MaintenanceRequest {
   @override
   String get id;
   @override
-  String get hostelId;
+  String? get hostelId;
   @override
-  String get reportedById;
+  String? get reportedById;
   @override
   String? get reportedByName;
   @override
@@ -462,7 +462,7 @@ abstract class _MaintenanceRequest implements MaintenanceRequest {
   @override
   MaintenanceStatus get status;
   @override
-  String get title;
+  String? get title;
   @override
   String get description;
   @override

@@ -3,13 +3,17 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'movement.freezed.dart';
 part 'movement.g.dart';
 
-enum MovementType { out, in_, manual }
+enum MovementType {
+  @JsonValue('OUT') out,
+  @JsonValue('IN') in_,
+  @JsonValue('MANUAL') manual,
+}
 
 @freezed
 class MovementLog with _$MovementLog {
   const factory MovementLog({
     required String id,
-    required String studentId,
+    String? studentId,
     String? studentName,
     String? roomNumber,
     String? photoUrl,

@@ -247,7 +247,7 @@ Complaint _$ComplaintFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Complaint {
   String get id => throw _privateConstructorUsedError;
-  String get studentId => throw _privateConstructorUsedError;
+  String? get studentId => throw _privateConstructorUsedError;
   String? get studentName => throw _privateConstructorUsedError;
   String? get roomNumber => throw _privateConstructorUsedError;
   ComplaintCategory get category => throw _privateConstructorUsedError;
@@ -272,7 +272,7 @@ abstract class $ComplaintCopyWith<$Res> {
   @useResult
   $Res call(
       {String id,
-      String studentId,
+      String? studentId,
       String? studentName,
       String? roomNumber,
       ComplaintCategory category,
@@ -299,7 +299,7 @@ class _$ComplaintCopyWithImpl<$Res, $Val extends Complaint>
   @override
   $Res call({
     Object? id = null,
-    Object? studentId = null,
+    Object? studentId = freezed,
     Object? studentName = freezed,
     Object? roomNumber = freezed,
     Object? category = null,
@@ -316,10 +316,10 @@ class _$ComplaintCopyWithImpl<$Res, $Val extends Complaint>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      studentId: null == studentId
+      studentId: freezed == studentId
           ? _value.studentId
           : studentId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       studentName: freezed == studentName
           ? _value.studentName
           : studentName // ignore: cast_nullable_to_non_nullable
@@ -374,7 +374,7 @@ abstract class _$$ComplaintImplCopyWith<$Res>
   @useResult
   $Res call(
       {String id,
-      String studentId,
+      String? studentId,
       String? studentName,
       String? roomNumber,
       ComplaintCategory category,
@@ -399,7 +399,7 @@ class __$$ComplaintImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? studentId = null,
+    Object? studentId = freezed,
     Object? studentName = freezed,
     Object? roomNumber = freezed,
     Object? category = null,
@@ -416,10 +416,10 @@ class __$$ComplaintImplCopyWithImpl<$Res>
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
-      studentId: null == studentId
+      studentId: freezed == studentId
           ? _value.studentId
           : studentId // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       studentName: freezed == studentName
           ? _value.studentName
           : studentName // ignore: cast_nullable_to_non_nullable
@@ -469,7 +469,7 @@ class __$$ComplaintImplCopyWithImpl<$Res>
 class _$ComplaintImpl implements _Complaint {
   const _$ComplaintImpl(
       {required this.id,
-      required this.studentId,
+      this.studentId,
       this.studentName,
       this.roomNumber,
       required this.category,
@@ -488,7 +488,7 @@ class _$ComplaintImpl implements _Complaint {
   @override
   final String id;
   @override
-  final String studentId;
+  final String? studentId;
   @override
   final String? studentName;
   @override
@@ -584,7 +584,7 @@ class _$ComplaintImpl implements _Complaint {
 abstract class _Complaint implements Complaint {
   const factory _Complaint(
       {required final String id,
-      required final String studentId,
+      final String? studentId,
       final String? studentName,
       final String? roomNumber,
       required final ComplaintCategory category,
@@ -602,7 +602,7 @@ abstract class _Complaint implements Complaint {
   @override
   String get id;
   @override
-  String get studentId;
+  String? get studentId;
   @override
   String? get studentName;
   @override
