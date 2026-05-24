@@ -117,11 +117,11 @@ async def me(current_user: User = Depends(get_current_user)):
         "phone": current_user.phone,
         "email": current_user.email,
         "role": role_map.get(current_user.role.value, current_user.role.value),
-        "hostelId": str(current_user.hostel_id) if current_user.hostel_id else None,
-        "institutionId": str(current_user.institution_id) if current_user.institution_id else None,
-        "isActive": current_user.is_active,
-        "fcmToken": None,
-        "createdAt": current_user.created_at.isoformat() if hasattr(current_user, 'created_at') and current_user.created_at else None,
+        "hostel_id": str(current_user.hostel_id) if current_user.hostel_id else None,
+        "institution_id": str(current_user.institution_id) if current_user.institution_id else None,
+        "is_active": current_user.is_active,
+        "fcm_token": None,
+        "created_at": current_user.created_at.isoformat() if hasattr(current_user, 'created_at') and current_user.created_at else None,
     }
 
 
