@@ -25,6 +25,7 @@ import 'features/broadcasts/screens/notices_screen.dart';
 import 'features/shifts/screens/handover_screen.dart';
 import 'features/analytics/screens/analytics_screen.dart';
 import 'features/staff_mgmt/screens/staff_mgmt_screen.dart';
+import 'features/sos/screens/sos_screen.dart';
 
 class _RouterNotifier extends ChangeNotifier {
   final Ref _ref;
@@ -36,9 +37,9 @@ class _RouterNotifier extends ChangeNotifier {
     final auth = _ref.read(authProvider);
     if (auth.isLoading) return null;
     final isAuth = auth.isAuthenticated;
-    final isLogin = state.matchedLocation == '/login';
-    if (!isAuth && !isLogin) return '/login';
-    if (isAuth && isLogin) return '/dashboard';
+    final loc = state.matchedLocation;
+    if (!isAuth && loc != '/login') return '/login';
+    if (isAuth && loc == '/login') return '/home/dashboard';
     return null;
   }
 }
@@ -54,98 +55,54 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/login',
         builder: (_, __) => const StaffLoginScreen(),
       ),
+
+      // ── Shell (bottom nav + drawer) ──────────────────────────────
       ShellRoute(
-        builder: (context, state, child) =>
-            HomeShell(child: child),
+        builder: (_, __, child) => HomeShell(child: child),
         routes: [
-          GoRoute(
-            path: '/dashboard',
-            builder: (_, __) => const RoleAwareDashboard(),
-          ),
-          GoRoute(
-            path: '/students',
-            builder: (_, __) => const StudentsScreen(),
-          ),
-          GoRoute(
-            path: '/students/:id',
-            builder: (_, state) => StudentDetailScreen(
-                studentId: state.pathParameters['id']!),
-          ),
-          GoRoute(
-            path: '/enrollment/:id',
-            builder: (_, state) => EnrollmentReviewScreen(
-                studentId: state.pathParameters['id']!),
-          ),
-          GoRoute(
-            path: '/gate',
-            builder: (_, __) => const GateMonitorScreen(),
-          ),
-          GoRoute(
-            path: '/complaints',
-            builder: (_, __) => const ComplaintsScreen(),
-          ),
-          GoRoute(
-            path: '/complaint/:id',
-            builder: (_, state) => ComplaintDetailScreen(
-                complaintId: state.pathParameters['id']!),
-          ),
-          GoRoute(
-            path: '/maintenance',
-            builder: (_, __) => const MaintenanceScreen(),
-          ),
-          GoRoute(
-            path: '/maintenance/:id',
-            builder: (_, state) => MaintenanceDetailScreen(
-                requestId: state.pathParameters['id']!),
-          ),
-          GoRoute(
-            path: '/leaves',
-            builder: (_, __) => const LeavesScreen(),
-          ),
-          GoRoute(
-            path: '/leaves/:id',
-            builder: (_, state) => LeaveDetailScreen(
-                leaveId: state.pathParameters['id']!),
-          ),
-          GoRoute(
-            path: '/mess',
-            builder: (_, __) => const MessScreen(),
-          ),
-          GoRoute(
-            path: '/visitors',
-            builder: (_, __) => const VisitorsScreen(),
-          ),
-          GoRoute(
-            path: '/visitors/:id',
-            builder: (_, state) => VisitorDetailScreen(
-                visitorId: state.pathParameters['id']!),
-          ),
-          GoRoute(
-            path: '/broadcasts',
-            builder: (_, __) => const BroadcastsScreen(),
-          ),
-          GoRoute(
-            path: '/broadcasts/new',
-            builder: (_, __) => const NewBroadcastScreen(),
-          ),
-          GoRoute(
-            path: '/notices',
-            builder: (_, __) => const NoticesScreen(),
-          ),
-          GoRoute(
-            path: '/handover',
-            builder: (_, __) => const HandoverScreen(),
-          ),
-          GoRoute(
-            path: '/analytics',
-            builder: (_, __) => const AnalyticsScreen(),
-          ),
-          GoRoute(
-            path: '/staff',
-            builder: (_, __) => const StaffMgmtScreen(),
-          ),
+          GoRoute(path: '/home/dashboard', builder: (_, __) => const RoleAwareDashboard()),
+          GoRoute(path: '/home/students',  builder: (_, __) => const StudentsScreen()),
+          GoRoute(path: '/home/gate',       builder: (_, __) => const GateMonitorScreen()),
+          GoRoute(path: '/home/complaints', builder: (_, __) => const ComplaintsScreen()),
+          GoRoute(path: '/home/maintenance',builder: (_, __) => const MaintenanceScreen()),
+          GoRoute(path: '/home/leaves',     builder: (_, __) => const LeavesScreen()),
+          GoRoute(path: '/home/mess',       builder: (_, __) => const MessScreen()),
+          GoRoute(path: '/home/visitors',   builder: (_, __) => const VisitorsScreen()),
+          GoRoute(path: '/home/analytics',  builder: (_, __) => const AnalyticsScreen()),
+          GoRoute(path: '/home/staff',      builder: (_, __) => const StaffMgmtScreen()),
+          GoRoute(path: '/home/broadcasts', builder: (_, __) => const BroadcastsScreen()),
+          GoRoute(path: '/home/notices',    builder: (_, __) => const NoticesScreen()),
         ],
       ),
+
+      // ── Detail / full-screen routes (outside shell) ──────────────
+      GoRoute(
+        path: '/students/:id',
+        builder: (_, state) => StudentDetailScreen(studentId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/students/enroll/:id',
+        builder: (_, state) => EnrollmentReviewScreen(studentId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/complaint/:id',
+        builder: (_, state) => ComplaintDetailScreen(complaintId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/maintenance/:id',
+        builder: (_, state) => MaintenanceDetailScreen(requestId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/leaves/:id',
+        builder: (_, state) => LeaveDetailScreen(leaveId: state.pathParameters['id']!),
+      ),
+      GoRoute(
+        path: '/visitors/:id',
+        builder: (_, state) => VisitorDetailScreen(visitorId: state.pathParameters['id']!),
+      ),
+      GoRoute(path: '/broadcasts/new', builder: (_, __) => const NewBroadcastScreen()),
+      GoRoute(path: '/shift/handover',  builder: (_, __) => const HandoverScreen()),
+      GoRoute(path: '/sos',             builder: (_, __) => const SosScreen()),
     ],
   );
 });
