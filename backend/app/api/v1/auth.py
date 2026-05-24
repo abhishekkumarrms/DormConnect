@@ -10,7 +10,7 @@ from app.schemas.auth import (
 )
 from app.services.auth_service import (
     send_sms_otp, login_student_guardian, login_staff_email,
-    login_guard_pin, refresh_tokens, get_current_user, _use_demo_otp,
+    login_guard_pin, refresh_tokens, get_current_user, require_roles, _use_demo_otp,
 )
 from app.core.config import settings
 from app.models.user import User, Role
@@ -158,6 +158,26 @@ async def staff_me(
         "hostelName": hostel_name,
         "institutionId": str(current_user.institution_id) if current_user.institution_id else None,
         "isActive": current_user.is_active,
+    }
+
+
+@router.get("/guard/me")
+async def guard_me(
+    current_user: User = Depends(require_roles(Role.GUARD)),
+    db: AsyncSession = Depends(get_db),
+):
+    """Guard profile — called on app launch to restore session and get hostel info."""
+    hostel_name = None
+    if current_user.hostel_id:
+        hostel = await db.get(Hostel, current_user.hostel_id)
+        hostel_name = hostel.name if hostel else None
+    return {
+        "id": str(current_user.id),
+        "name": current_user.name,
+        "phone": current_user.phone,
+        "hostel_id": str(current_user.hostel_id) if current_user.hostel_id else None,
+        "hostel_name": hostel_name,
+        "institution_id": str(current_user.institution_id) if current_user.institution_id else None,
     }
 
 

@@ -9,9 +9,8 @@ class ShiftLogScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final gate = ref.watch(gateProvider);
-    final log = gate.recentConfirms;
     final today = DateTime.now();
+    final logAsync = ref.watch(shiftLogProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -28,18 +27,47 @@ class ShiftLogScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
-            onPressed: () => ref.read(gateProvider.notifier).refresh(),
+            onPressed: () => ref.invalidate(shiftLogProvider),
           ),
         ],
       ),
-      body: log.isEmpty
-          ? const _EmptyLog()
-          : ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: log.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
-              itemBuilder: (_, i) => _LogRow(entry: log[i]),
-            ),
+      body: logAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (e, _) => Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline_rounded,
+                  size: 40, color: Color(0xFFEF4444)),
+              const SizedBox(height: 12),
+              Text(
+                'Failed to load log',
+                style: const TextStyle(
+                    fontSize: 16, color: Color(0xFF1E293B),
+                    fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(height: 6),
+              Text(e.toString(),
+                  style: const TextStyle(
+                      fontSize: 12, color: Color(0xFF94A3B8))),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () => ref.invalidate(shiftLogProvider),
+                child: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+        data: (log) => log.isEmpty
+            ? const _EmptyLog()
+            : ListView.separated(
+                padding: const EdgeInsets.all(16),
+                itemCount: log.length,
+                separatorBuilder: (_, __) =>
+                    const Divider(height: 1),
+                itemBuilder: (_, i) => _LogRow(entry: log[i]),
+              ),
+      ),
     );
   }
 }
@@ -55,10 +83,9 @@ class _EmptyLog extends StatelessWidget {
             const Icon(Icons.history_rounded,
                 size: 48, color: Color(0xFFCBD5E1)),
             const SizedBox(height: 12),
-            Text(
-              'No entries yet this session',
-              style: const TextStyle(
-                  fontSize: 16, color: Color(0xFF94A3B8)),
+            const Text(
+              'No entries yet today',
+              style: TextStyle(fontSize: 16, color: Color(0xFF94A3B8)),
             ),
           ],
         ),
@@ -66,10 +93,10 @@ class _EmptyLog extends StatelessWidget {
 }
 
 class _LogRow extends StatelessWidget {
-  final ConfirmedEntry entry;
+  final ShiftLogEntry entry;
   const _LogRow({required this.entry});
 
-  bool get _isOut => entry.movementType == 'out';
+  bool get _isOut => entry.movementType == 'OUT';
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -79,7 +106,9 @@ class _LogRow extends StatelessWidget {
           SizedBox(
             width: 60,
             child: Text(
-              DateFormat('h:mm a').format(entry.confirmedAt),
+              entry.createdAt != null
+                  ? DateFormat('h:mm a').format(entry.createdAt!.toLocal())
+                  : '—',
               style: const TextStyle(
                 fontSize: 13,
                 color: Color(0xFF6B7280),
@@ -100,7 +129,7 @@ class _LogRow extends StatelessWidget {
           ),
           const SizedBox(width: 10),
 
-          // Name + room
+          // Name + room + destination
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,16 +139,31 @@ class _LogRow extends StatelessWidget {
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.w600),
                 ),
-                Text(
-                  'Rm ${entry.roomNumber}',
-                  style: const TextStyle(
-                      fontSize: 12, color: Color(0xFF9CA3AF)),
-                ),
+                Row(children: [
+                  Text(
+                    'Rm ${entry.roomNumber}',
+                    style: const TextStyle(
+                        fontSize: 12, color: Color(0xFF9CA3AF)),
+                  ),
+                  if (entry.destination != null) ...[
+                    const Text(' · ',
+                        style: TextStyle(
+                            fontSize: 12, color: Color(0xFF9CA3AF))),
+                    Flexible(
+                      child: Text(
+                        entry.destination!,
+                        style: const TextStyle(
+                            fontSize: 12, color: Color(0xFF9CA3AF)),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ]),
               ],
             ),
           ),
 
-          // Direction label + manual badge
+          // Direction label + flags
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -133,22 +177,20 @@ class _LogRow extends StatelessWidget {
                       : const Color(0xFF10B981),
                 ),
               ),
-              if (entry.wasManual)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 5, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFFEF9C3),
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                        color: const Color(0xFFFBBF24).withOpacity(0.5)),
-                  ),
-                  child: const Text(
-                    '⚠️ Manual',
-                    style: TextStyle(
-                        fontSize: 10, color: Color(0xFF92400E)),
-                  ),
-                ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (entry.isOverdue)
+                    const Icon(Icons.timer_off_outlined,
+                        size: 14, color: Color(0xFFEF4444)),
+                  if (entry.isFlagged)
+                    const Padding(
+                      padding: EdgeInsets.only(left: 4),
+                      child: Icon(Icons.flag_rounded,
+                          size: 14, color: Color(0xFFF59E0B)),
+                    ),
+                ],
+              ),
             ],
           ),
         ]),

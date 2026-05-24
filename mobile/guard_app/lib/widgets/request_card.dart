@@ -16,14 +16,14 @@ class RequestCard extends StatelessWidget {
     required this.onTap,
   });
 
-  Color get _borderColor => switch (request.movementType) {
-        'in' => _entryBorder,
-        'leave' => _leaveBorder,
+  Color get _borderColor => switch (request.movementType.toUpperCase()) {
+        'IN' => _entryBorder,
+        'LEAVE' => _leaveBorder,
         _ => _exitBorder,
       };
 
-  Color get _otpColor => switch (request.movementType) {
-        'in' => _entryBorder,
+  Color get _otpColor => switch (request.movementType.toUpperCase()) {
+        'IN' => _entryBorder,
         _ => _otpAmber,
       };
 
@@ -71,7 +71,7 @@ class RequestCard extends StatelessWidget {
                 ],
               ),
             ),
-            if (request.movementType == 'leave')
+            if (request.movementType.toUpperCase() == 'LEAVE')
               Container(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10, vertical: 4),

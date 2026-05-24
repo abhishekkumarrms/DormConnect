@@ -53,29 +53,63 @@ class GateScreen extends ConsumerWidget {
 
                   const SizedBox(height: 12),
 
-                  // STUDENTS OUTSIDE
+                  // ENTRY REQUESTS
+                  _SectionHeader(
+                    icon: Icons.arrow_circle_down_rounded,
+                    label: 'ENTRY REQUESTS',
+                    count: gate.entryRequests.length,
+                    color: const Color(0xFF10B981),
+                  ),
+                  if (gate.entryRequests.isEmpty)
+                    _EmptySection(label: 'No entry OTPs pending'),
+                  ...gate.entryRequests.map(
+                    (r) => Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: RequestCard(
+                        request: r,
+                        onTap: () => context.go('/confirm', extra: r),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // ON LEAVE — approved leave, student still IN, expecting exit today
+                  _SectionHeader(
+                    icon: Icons.event_available_rounded,
+                    label: 'ON LEAVE TODAY',
+                    count: gate.onLeaveStudents.length,
+                    color: const Color(0xFF2DD4BF),
+                  ),
+                  if (gate.onLeaveStudents.isEmpty)
+                    _EmptySection(label: 'No approved leave departures today'),
+                  ...gate.onLeaveStudents.map(
+                    (s) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: _OnLeaveCard(
+                        student: s,
+                        onTap: () => context.go(
+                          '/confirm',
+                          extra: s.toExitRequest(),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  // OUT COUNT
                   _SectionHeader(
                     icon: Icons.people_outline_rounded,
                     label: 'OUTSIDE',
                     count: gate.studentsOutCount,
                     color: const Color(0xFF6B7280),
                   ),
-                  if (gate.liveOut.isEmpty)
-                    _EmptySection(label: 'All students inside'),
-                  ...gate.liveOut.take(8).map((m) => Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: _OutCard(log: m),
-                      )),
-                  if (gate.liveOut.length > 8)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 8),
-                      child: Text(
-                        '+ ${gate.liveOut.length - 8} more outside…',
-                        style: const TextStyle(
-                            color: Color(0xFF6B7280), fontSize: 12),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                  _EmptySection(
+                    label: gate.studentsOutCount == 0
+                        ? 'All students inside'
+                        : '${gate.studentsOutCount} student${gate.studentsOutCount == 1 ? '' : 's'} currently outside',
+                  ),
                 ],
               ),
             ),
@@ -219,38 +253,53 @@ class _EmptySection extends StatelessWidget {
       );
 }
 
-class _OutCard extends StatelessWidget {
-  final MovementLog log;
-  const _OutCard({required this.log});
+class _OnLeaveCard extends StatelessWidget {
+  final OnLeaveStudent student;
+  final VoidCallback onTap;
+  const _OnLeaveCard({required this.student, required this.onTap});
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          border: const Border(
-              left: BorderSide(color: Color(0xFF6B7280), width: 3)),
-        ),
-        child: Row(children: [
-          Expanded(
-            child: Text(
-              '${log.studentName ?? '?'}  ·  Rm ${log.roomNumber ?? '—'}',
-              style: const TextStyle(
-                  fontSize: 15, fontWeight: FontWeight.w600),
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: const Border(
+                left: BorderSide(color: Color(0xFF2DD4BF), width: 3)),
+          ),
+          child: Row(children: [
+            const Icon(Icons.event_available_rounded,
+                color: Color(0xFF2DD4BF), size: 18),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    student.studentName,
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    'Rm ${student.roomNumber}',
+                    style: const TextStyle(
+                        fontSize: 12, color: Color(0xFF6B7280)),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Text(
-            log.createdAt?.timeOnly ?? '',
-            style: const TextStyle(
-                fontSize: 12, color: Color(0xFF6B7280)),
-          ),
-          if (log.isOverdue) ...[
-            const SizedBox(width: 6),
-            const Icon(Icons.warning_amber_rounded,
-                color: Color(0xFFEF4444), size: 14),
-          ],
-        ]),
+            const Text(
+              'LOG EXIT',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF2DD4BF),
+              ),
+            ),
+          ]),
+        ),
       );
 }
 

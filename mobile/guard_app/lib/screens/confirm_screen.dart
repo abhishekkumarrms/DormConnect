@@ -1,9 +1,9 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/gate_provider.dart';
+import '../services/feedback_service.dart';
 
 class ConfirmScreen extends ConsumerStatefulWidget {
   final PendingRequest request;
@@ -21,7 +21,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen>
 
   late AnimationController _flashCtrl;
   late Animation<Color?> _flashAnim;
-  final _player = AudioPlayer();
+  final _feedback = FeedbackService();
 
   @override
   void initState() {
@@ -35,11 +35,11 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen>
   @override
   void dispose() {
     _flashCtrl.dispose();
-    _player.dispose();
+    _feedback.dispose();
     super.dispose();
   }
 
-  bool get _isLeave => widget.request.movementType == 'leave';
+  bool get _isLeave => widget.request.movementType.toUpperCase() == 'LEAVE';
 
   Future<void> _confirm() async {
     setState(() => _confirming = true);
@@ -48,15 +48,13 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen>
         .confirmPassage(widget.request);
 
     if (ok) {
-      // Green flash + beep
+      // Green flash + audio/vibration feedback
       _flashAnim = ColorTween(
         begin: const Color(0xFF10B981).withOpacity(0.3),
         end: Colors.transparent,
       ).animate(_flashCtrl);
       _flashCtrl.forward(from: 0);
-      try {
-        await _player.play(AssetSource('beep.mp3'));
-      } catch (_) {}
+      await _feedback.successFeedback();
       setState(() {
         _success = true;
         _confirming = false;
@@ -64,12 +62,13 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen>
       await Future.delayed(const Duration(milliseconds: 600));
       if (mounted) context.go('/gate');
     } else {
-      // Red flash
+      // Red flash + error vibration
       _flashAnim = ColorTween(
         begin: const Color(0xFFEF4444).withOpacity(0.3),
         end: Colors.transparent,
       ).animate(_flashCtrl);
       _flashCtrl.forward(from: 0);
+      await _feedback.errorFeedback();
       setState(() {
         _failed = true;
         _confirming = false;
@@ -80,7 +79,7 @@ class _ConfirmScreenState extends ConsumerState<ConfirmScreen>
   @override
   Widget build(BuildContext context) {
     final r = widget.request;
-    final isOut = r.movementType == 'out';
+    final isOut = r.movementType.toUpperCase() == 'OUT';
 
     return AnimatedBuilder(
       animation: _flashAnim,
@@ -281,8 +280,8 @@ class _OtpBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLeave = request.movementType == 'leave';
-    final isOut = request.movementType == 'out';
+    final isLeave = request.movementType.toUpperCase() == 'LEAVE';
+    final isOut = request.movementType.toUpperCase() == 'OUT';
 
     return Container(
       width: double.infinity,
