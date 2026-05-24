@@ -2,10 +2,20 @@ import 'package:dormconnect_core/dormconnect_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../providers/child_provider.dart';
 
 final _movementsProvider =
     FutureProvider.autoDispose<List<MovementLog>>((ref) async {
-  return ref.read(gateApiProvider).getHistory(limit: 100);
+  final child = ref.read(childProvider);
+  final studentId = child.student?.id;
+  if (studentId == null) return [];
+  final resp = await ref.read(apiClientProvider).get(
+    '/api/v1/gate/history/$studentId',
+    params: {'limit': 100},
+  );
+  return (resp.data as List<dynamic>)
+      .map((e) => MovementLog.fromJson(e as Map<String, dynamic>))
+      .toList();
 });
 
 class MovementsScreen extends ConsumerWidget {

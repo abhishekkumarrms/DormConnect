@@ -44,6 +44,17 @@ class LeaveApi {
     return LeaveApplication.fromJson(resp.data as Map<String, dynamic>);
   }
 
+  Future<void> guardianConfirmAuthenticated(
+    String leaveId, {
+    required bool confirmed,
+    String? note,
+  }) async {
+    await _client.post(
+      '/api/v1/leaves/$leaveId/guardian-confirm',
+      data: {'confirmed': confirmed, if (note != null && note.isNotEmpty) 'note': note},
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getCalendar(
       String hostelId, String month) async {
     final resp = await _client.get('/api/v1/leaves/calendar',

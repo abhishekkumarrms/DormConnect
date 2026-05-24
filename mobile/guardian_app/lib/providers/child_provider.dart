@@ -42,21 +42,46 @@ class ChildNotifier extends StateNotifier<ChildState> {
   final Ref _ref;
 
   ChildNotifier(this._ref) : super(const ChildState()) {
-    refresh();
+    _ref.listen<AuthState>(authProvider, (prev, next) {
+      if (next.isAuthenticated && prev?.isAuthenticated != true) {
+        refresh();
+      }
+    });
+    if (_ref.read(authProvider).isAuthenticated) refresh();
   }
 
   Future<void> refresh() async {
     state = state.copyWith(isLoading: true, error: null);
     try {
+      final client = _ref.read(apiClientProvider);
+
       final results = await Future.wait([
-        _ref.read(studentApiProvider).getProfile(),
-        _ref.read(gateApiProvider).getHistory(limit: 5),
-        _ref.read(leaveApiProvider).list(limit: 10),
+        client.get('/api/v1/guardian/child/student'),
+        client.get('/api/v1/guardian/child/leaves'),
       ]);
+
+      final student = Student.fromJson(results[0].data as Map<String, dynamic>);
+
+      final leaves = (results[1].data as List<dynamic>)
+          .map((e) => LeaveApplication.fromJson(e as Map<String, dynamic>))
+          .toList();
+
+      // Fetch movements separately using the student's ID
+      List<MovementLog> movements = [];
+      try {
+        final movResp = await client.get(
+          '/api/v1/gate/history/${student.id}',
+          params: {'limit': 10},
+        );
+        movements = (movResp.data as List<dynamic>)
+            .map((e) => MovementLog.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } catch (_) {}
+
       state = ChildState(
-        student: results[0] as Student,
-        recentMovements: results[1] as List<MovementLog>,
-        activeLeaves: results[2] as List<LeaveApplication>,
+        student: student,
+        recentMovements: movements,
+        activeLeaves: leaves,
         isLoading: false,
         lastUpdated: DateTime.now(),
       );

@@ -146,9 +146,19 @@ class _GuardianOtpScreenState extends ConsumerState<GuardianOtpScreen> {
     final ok = await ref
         .read(authProvider.notifier)
         .verifyOtp(widget.phone, _otpCtrl.text.trim());
-    if (!ok && mounted) {
+    if (!mounted) return;
+    if (!ok) {
       DcSnackbar.error(
           context, ref.read(authProvider).error ?? 'Invalid OTP');
+      return;
+    }
+    final user = ref.read(authProvider).user;
+    if (user?.role != UserRole.guardian) {
+      await ref.read(authProvider.notifier).logout();
+      if (mounted) {
+        DcSnackbar.error(context,
+            'This app is for parents/guardians only. Use the student app instead.');
+      }
     }
   }
 

@@ -2,11 +2,11 @@ import 'package:dormconnect_core/dormconnect_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../providers/child_provider.dart';
 
 final _leaveDetailProvider =
     FutureProvider.autoDispose.family<LeaveApplication, String>((ref, id) async {
-  final list = await ref.read(leaveApiProvider).list();
-  return list.firstWhere((l) => l.id == id);
+  return ref.read(leaveApiProvider).getById(id);
 });
 
 class LeaveDetailScreen extends ConsumerWidget {
@@ -53,8 +53,12 @@ class _LeaveDetailBodyState extends ConsumerState<_LeaveDetailBody> {
   Future<void> _confirm() async {
     setState(() => _loading = true);
     try {
-      await ref.read(leaveApiProvider).guardianConfirm(widget.leave.id);
+      await ref.read(leaveApiProvider).guardianConfirmAuthenticated(
+            widget.leave.id,
+            confirmed: true,
+          );
       ref.invalidate(_leaveDetailProvider(widget.leave.id));
+      ref.invalidate(childProvider);
       if (mounted) DcSnackbar.success(context, 'Leave confirmed');
     } catch (e) {
       if (mounted) DcSnackbar.error(context, e.toString());

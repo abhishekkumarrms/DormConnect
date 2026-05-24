@@ -6,13 +6,9 @@ import '../providers/child_provider.dart';
 
 final _staffContactsProvider =
     FutureProvider.autoDispose<List<Map<String, dynamic>>>((ref) async {
-  final child = ref.read(childProvider);
-  final hostelId = child.student?.hostelId ?? '';
-  if (hostelId.isEmpty) return [];
   try {
     final resp = await ref.read(apiClientProvider).get(
-      '/api/v1/staff',
-      params: {'hostel_id': hostelId, 'limit': 20},
+      '/api/v1/guardian/child/staff',
     );
     final data = resp.data as List<dynamic>;
     return data.cast<Map<String, dynamic>>();

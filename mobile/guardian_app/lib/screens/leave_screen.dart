@@ -3,10 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import '../providers/child_provider.dart';
 
 final _leavesProvider =
     FutureProvider.autoDispose<List<LeaveApplication>>((ref) async {
-  return ref.read(leaveApiProvider).list();
+  final resp = await ref
+      .read(apiClientProvider)
+      .get('/api/v1/guardian/child/leaves');
+  return (resp.data as List<dynamic>)
+      .map((e) => LeaveApplication.fromJson(e as Map<String, dynamic>))
+      .toList();
 });
 
 class LeaveScreen extends ConsumerWidget {
@@ -109,8 +115,12 @@ class _LeaveCardState extends ConsumerState<_LeaveCard> {
   Future<void> _confirm() async {
     setState(() => _loading = true);
     try {
-      await ref.read(leaveApiProvider).guardianConfirm(widget.leave.id);
+      await ref.read(leaveApiProvider).guardianConfirmAuthenticated(
+            widget.leave.id,
+            confirmed: true,
+          );
       ref.invalidate(_leavesProvider);
+      ref.invalidate(childProvider);
       if (mounted) DcSnackbar.success(context, 'Leave confirmed');
     } catch (e) {
       if (mounted) DcSnackbar.error(context, e.toString());

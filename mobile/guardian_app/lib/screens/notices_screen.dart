@@ -203,7 +203,7 @@ class _NoticeCard extends StatelessWidget {
             const SizedBox(height: 8),
             Row(children: [
               Text(
-                notice.postedByName,
+                notice.postedByName ?? '',
                 style: const TextStyle(
                     fontSize: 11,
                     color: Color(0xFF9CA3AF),
@@ -291,7 +291,7 @@ class _BroadcastCard extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              broadcast.sentByName,
+              broadcast.sentByName ?? '',
               style: const TextStyle(
                   fontSize: 11, color: Color(0xFF9CA3AF)),
             ),
