@@ -23,11 +23,12 @@ class DcButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final effectiveColor = color ?? AppColors.primary;
     final child = isLoading
-        ? const SizedBox(
+        ? SizedBox(
             width: 20,
             height: 20,
             child: CircularProgressIndicator(
-                strokeWidth: 2, color: Colors.white))
+                strokeWidth: 2,
+                color: outlined ? effectiveColor : Colors.white))
         : Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
