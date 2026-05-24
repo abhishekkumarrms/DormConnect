@@ -67,7 +67,7 @@ async def login_student_guardian(
 
     if not user:
         # Auto-create user shell — they complete enrollment via form
-        user = User(phone=phone, role=Role.STUDENT, is_active=False)
+        user = User(phone=phone, name="", role=Role.STUDENT, is_active=False)
         db.add(user)
         await db.flush()
         await db.commit()
