@@ -27,6 +27,8 @@ class Settings(BaseSettings):
     FCM_CREDENTIALS_JSON: Optional[str] = None
     SMS_API_KEY: Optional[str] = None
     SMS_SENDER_ID: str = "DRMCNT"
+    # Set DEMO_OTP_ENABLED=false in production when real SMS is configured
+    DEMO_OTP_ENABLED: bool = True
     SEED_SECRET: Optional[str] = None
     ENVIRONMENT: str = "development"
     # Comma-separated allowed CORS origins for production

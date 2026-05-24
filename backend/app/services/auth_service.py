@@ -25,10 +25,7 @@ security = HTTPBearer()
 DEMO_OTP = "123456"
 
 def _use_demo_otp() -> bool:
-    if settings.ENVIRONMENT == "development":
-        return True
-    sms_key = settings.SMS_API_KEY
-    return not sms_key or sms_key in ("your-msg91-key", "")
+    return settings.DEMO_OTP_ENABLED or settings.ENVIRONMENT == "development"
 
 async def send_sms_otp(phone: str, redis: aioredis.Redis) -> bool:
     use_demo = _use_demo_otp()
