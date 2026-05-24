@@ -137,12 +137,7 @@ async def login_staff_email(
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account deactivated")
 
-    if settings.ENVIRONMENT != "development" and device_id and user.device_id and user.device_id != device_id:
-        raise HTTPException(
-            status_code=409,
-            detail="Account already active on another device. Contact caretaker.",
-        )
-
+    # Email+password proves identity — allow re-binding on reinstall
     if device_id:
         user.device_id = device_id
         await db.commit()
@@ -163,12 +158,7 @@ async def login_guard_pin(
     if not user.is_active:
         raise HTTPException(status_code=403, detail="Account deactivated")
 
-    if settings.ENVIRONMENT != "development" and device_id and user.device_id and user.device_id != device_id:
-        raise HTTPException(
-            status_code=409,
-            detail="Account already active on another device. Contact caretaker.",
-        )
-
+    # PIN proves identity — allow re-binding on reinstall
     if device_id:
         user.device_id = device_id
         await db.commit()
