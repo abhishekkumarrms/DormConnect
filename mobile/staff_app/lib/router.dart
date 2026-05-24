@@ -39,7 +39,7 @@ class _RouterNotifier extends ChangeNotifier {
     final auth = _ref.read(authProvider);
     final loc = state.matchedLocation;
 
-    if (auth.isLoading) return loc == '/splash' ? null : '/splash';
+    if (auth.isInitializing) return loc == '/splash' ? null : '/splash';
 
     if (loc == '/splash') {
       return auth.isAuthenticated ? '/home/dashboard' : '/login';

@@ -37,7 +37,7 @@ class _RouterNotifier extends ChangeNotifier {
     final loc = state.matchedLocation;
 
     // Stay on splash while auth initializes
-    if (auth.isLoading) return loc == '/splash' ? null : '/splash';
+    if (auth.isInitializing) return loc == '/splash' ? null : '/splash';
 
     // Splash resolved — navigate based on auth state
     if (loc == '/splash') {

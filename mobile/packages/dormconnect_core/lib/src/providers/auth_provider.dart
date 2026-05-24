@@ -8,6 +8,7 @@ import 'api_providers.dart';
 class AuthState {
   final User? user;
   final bool isLoading;
+  final bool isInitializing; // true only during _loadFromStorage() on app start
   final String? error;
   final String? scope;           // "full" | "enrollment" | null
   final String? enrollmentPhone; // phone saved during sendOtp
@@ -16,6 +17,7 @@ class AuthState {
   const AuthState({
     this.user,
     this.isLoading = false,
+    this.isInitializing = false,
     this.error,
     this.scope,
     this.enrollmentPhone,
@@ -28,6 +30,7 @@ class AuthState {
   AuthState copyWith({
     User? user,
     bool? isLoading,
+    bool? isInitializing,
     String? error,
     String? scope,
     String? enrollmentPhone,
@@ -39,6 +42,7 @@ class AuthState {
       AuthState(
         user: clearUser ? null : (user ?? this.user),
         isLoading: isLoading ?? this.isLoading,
+        isInitializing: isInitializing ?? this.isInitializing,
         error: error,
         scope: clearScope ? null : (scope ?? this.scope),
         enrollmentPhone: clearEnrollment ? null : (enrollmentPhone ?? this.enrollmentPhone),
@@ -49,7 +53,7 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   final Ref _ref;
 
-  AuthNotifier(this._ref) : super(const AuthState(isLoading: true)) {
+  AuthNotifier(this._ref) : super(const AuthState(isInitializing: true)) {
     _loadFromStorage();
   }
 
