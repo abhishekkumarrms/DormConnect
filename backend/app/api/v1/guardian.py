@@ -1,16 +1,15 @@
 import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, desc
+from sqlalchemy import select
 
 from app.core.database import get_db
 from app.models.user import User, Role
 from app.models.student import Student
-from app.models.institution import Hostel
 from app.schemas.student import StudentProfile
 from app.schemas.leave import LeaveResponse
 from app.services.auth_service import require_roles
-from app.services import leave_service
+from app.services import leave_service, student_service
 
 router = APIRouter(prefix="/guardian", tags=["guardian"])
 
@@ -31,21 +30,17 @@ async def guardian_profile(
     db: AsyncSession = Depends(get_db),
 ):
     student = await _get_child(current_user, db)
-    hostel_name = None
-    if student.hostel_id:
-        hostel = await db.get(Hostel, student.hostel_id)
-        hostel_name = hostel.name if hostel else None
-
+    profile = await student_service.get_student_profile(student.id, db)
     return {
         "guardian_id": str(current_user.id),
         "guardian_name": current_user.name,
         "guardian_phone": current_user.phone,
         "child_student_id": str(student.id),
-        "child_name": student.name,
-        "child_room": student.room_number,
-        "child_hostel_id": str(student.hostel_id) if student.hostel_id else None,
-        "child_hostel_name": hostel_name,
-        "child_current_status": student.current_status.value if student.current_status else "IN",
+        "child_name": profile.name,
+        "child_room": profile.room_number,
+        "child_hostel_id": str(profile.hostel_id),
+        "child_hostel_name": profile.hostel_name,
+        "child_current_status": profile.current_status,
     }
 
 
@@ -55,12 +50,7 @@ async def child_student(
     db: AsyncSession = Depends(get_db),
 ):
     student = await _get_child(current_user, db)
-    hostel_name = None
-    if student.hostel_id:
-        hostel = await db.get(Hostel, student.hostel_id)
-        hostel_name = hostel.name if hostel else None
-    student.hostel_name = hostel_name
-    return student
+    return await student_service.get_student_profile(student.id, db)
 
 
 @router.get("/child/leaves", response_model=list[LeaveResponse])
