@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'app_keys.dart';
 
+import 'features/auth/screens/splash_screen.dart';
 import 'features/auth/screens/staff_login_screen.dart';
 import 'features/home/screens/home_shell.dart';
 import 'features/dashboard/screens/role_aware_dashboard.dart';
@@ -36,11 +37,16 @@ class _RouterNotifier extends ChangeNotifier {
 
   String? redirect(BuildContext context, GoRouterState state) {
     final auth = _ref.read(authProvider);
-    if (auth.isLoading) return null;
-    final isAuth = auth.isAuthenticated;
     final loc = state.matchedLocation;
-    if (!isAuth && loc != '/login') return '/login';
-    if (isAuth && loc == '/login') return '/home/dashboard';
+
+    if (auth.isLoading) return loc == '/splash' ? null : '/splash';
+
+    if (loc == '/splash') {
+      return auth.isAuthenticated ? '/home/dashboard' : '/login';
+    }
+
+    if (!auth.isAuthenticated && loc != '/login') return '/login';
+    if (auth.isAuthenticated && loc == '/login') return '/home/dashboard';
     return null;
   }
 }
@@ -49,10 +55,11 @@ final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _RouterNotifier(ref);
   return GoRouter(
     navigatorKey: navigatorKey,
-    initialLocation: '/login',
+    initialLocation: '/splash',
     refreshListenable: notifier,
     redirect: notifier.redirect,
     routes: [
+      GoRoute(path: '/splash', builder: (_, __) => const StaffSplashScreen()),
       GoRoute(
         path: '/login',
         builder: (_, __) => const StaffLoginScreen(),

@@ -35,13 +35,21 @@ class _RouterNotifier extends ChangeNotifier {
   String? redirect(BuildContext context, GoRouterState state) {
     final auth = _ref.read(authProvider);
     final loc = state.matchedLocation;
-    if (loc == '/splash') return null;
-    if (auth.isLoading) return null;
+
+    // Stay on splash while auth initializes
+    if (auth.isLoading) return loc == '/splash' ? null : '/splash';
+
+    // Splash resolved — navigate based on auth state
+    if (loc == '/splash') {
+      if (auth.hasEnrollmentToken) {
+        return auth.enrollmentState == 'PENDING' ? '/auth/pending' : '/auth/enroll';
+      }
+      return auth.isAuthenticated ? '/home/dashboard' : '/auth/phone';
+    }
 
     const authRoutes = ['/auth/phone', '/auth/otp', '/auth/enroll', '/auth/pending'];
     final onAuthRoute = authRoutes.any((p) => loc.startsWith(p));
 
-    // Enrollment-scope: route by enrollment state
     if (auth.hasEnrollmentToken) {
       if (auth.enrollmentState == 'REQUIRED') {
         return loc.startsWith('/auth/enroll') ? null : '/auth/enroll';
@@ -49,14 +57,10 @@ class _RouterNotifier extends ChangeNotifier {
       if (auth.enrollmentState == 'PENDING') {
         return loc == '/auth/pending' ? null : '/auth/pending';
       }
-      // Unknown enrollment state — send to form
       return loc.startsWith('/auth/enroll') ? null : '/auth/enroll';
     }
 
-    // Not authenticated at all
     if (!auth.isAuthenticated && !onAuthRoute) return '/auth/phone';
-
-    // Fully authenticated on an auth route
     if (auth.isAuthenticated && onAuthRoute) return '/home/dashboard';
 
     return null;

@@ -1,16 +1,14 @@
 import 'package:dormconnect_core/dormconnect_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-class SplashScreen extends ConsumerStatefulWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  ConsumerState<SplashScreen> createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen>
+class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _fade;
@@ -22,17 +20,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
         vsync: this, duration: const Duration(milliseconds: 800));
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
     _ctrl.forward();
-    Future.delayed(const Duration(seconds: 2), _navigate);
-  }
-
-  void _navigate() {
-    if (!mounted) return;
-    final auth = ref.read(authProvider);
-    if (auth.isAuthenticated) {
-      context.go('/home/dashboard');
-    } else {
-      context.go('/auth/phone');
-    }
   }
 
   @override
@@ -56,11 +43,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
+                    boxShadow: const [
                       BoxShadow(
                           color: Colors.black26,
                           blurRadius: 20,
-                          offset: const Offset(0, 8))
+                          offset: Offset(0, 8))
                     ],
                   ),
                   child: const Icon(Icons.apartment_rounded,

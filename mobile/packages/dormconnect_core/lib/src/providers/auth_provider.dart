@@ -49,18 +49,22 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   final Ref _ref;
 
-  AuthNotifier(this._ref) : super(const AuthState()) {
+  AuthNotifier(this._ref) : super(const AuthState(isLoading: true)) {
     _loadFromStorage();
   }
 
   Future<void> _loadFromStorage() async {
     final token = await SecureStorage.read(AppConstants.tokenKey);
-    if (token == null) return;
+    if (token == null) {
+      state = const AuthState();
+      return;
+    }
     try {
       final user = await _ref.read(authApiProvider).getMe();
       state = AuthState(user: user, scope: 'full');
     } catch (_) {
       await SecureStorage.deleteAll();
+      state = const AuthState();
     }
   }
 
