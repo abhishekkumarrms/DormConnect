@@ -67,13 +67,13 @@ Map<String, dynamic> _$$StudentImplToJson(_$StudentImpl instance) {
 }
 
 const _$EnrollmentStatusEnumMap = {
-  EnrollmentStatus.pending: 'pending',
-  EnrollmentStatus.active: 'active',
-  EnrollmentStatus.inactive: 'inactive',
-  EnrollmentStatus.checkedOut: 'checkedOut',
+  EnrollmentStatus.pending: 'PENDING',
+  EnrollmentStatus.active: 'ACTIVE',
+  EnrollmentStatus.inactive: 'INACTIVE',
+  EnrollmentStatus.checkedOut: 'CHECKED_OUT',
 };
 
 const _$StudentStatusEnumMap = {
-  StudentStatus.inHostel: 'inHostel',
-  StudentStatus.outHostel: 'outHostel',
+  StudentStatus.inHostel: 'IN',
+  StudentStatus.outHostel: 'OUT',
 };

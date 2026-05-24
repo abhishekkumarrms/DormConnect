@@ -10,7 +10,7 @@ final _allStudentsProvider =
 
 final _pendingEnrollProvider =
     FutureProvider.autoDispose<List<Student>>((ref) async =>
-        ref.watch(studentApiProvider).list(enrollmentStatus: 'pending', limit: 100));
+        ref.watch(studentApiProvider).pendingEnrollments());
 
 class StudentsScreen extends ConsumerStatefulWidget {
   const StudentsScreen({super.key});

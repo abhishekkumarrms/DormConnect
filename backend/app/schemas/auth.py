@@ -54,6 +54,8 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
     role: str
     user_id: str
+    scope: str = "full"  # "full" or "enrollment"
+    enrollment_state: Optional[str] = None  # "REQUIRED" | "PENDING" | null
 
 
 class RefreshRequest(BaseModel):

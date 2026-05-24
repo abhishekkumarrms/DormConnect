@@ -16,6 +16,7 @@ from app.core.otp import generate_otp, store_sms_otp, verify_sms_otp
 from app.core.database import get_db
 from app.core.redis_client import get_redis
 from app.models.user import User, Role
+from app.models.student import Student, EnrollmentStatus
 from app.schemas.auth import TokenResponse
 
 logger = logging.getLogger(__name__)
@@ -65,11 +66,55 @@ async def login_student_guardian(
     user = result.scalar_one_or_none()
 
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    if not user.is_active:
-        raise HTTPException(status_code=403, detail="Account not active. Contact caretaker.")
+        # Auto-create user shell — they complete enrollment via form
+        user = User(phone=phone, role=Role.STUDENT, is_active=False)
+        db.add(user)
+        await db.flush()
+        await db.commit()
+        await db.refresh(user)
+        token = create_access_token(
+            data={"sub": str(user.id), "role": user.role.value},
+            scope="enrollment",
+        )
+        return TokenResponse(
+            access_token=token,
+            refresh_token="",
+            role=user.role.value,
+            user_id=str(user.id),
+            scope="enrollment",
+            enrollment_state="REQUIRED",
+        )
+
     if user.role not in (Role.STUDENT, Role.GUARDIAN):
         raise HTTPException(status_code=403, detail="Use staff login for staff accounts")
+
+    # Check enrollment status for students
+    if user.role == Role.STUDENT:
+        student_result = await db.execute(
+            select(Student).where(Student.user_id == user.id)
+        )
+        student = student_result.scalar_one_or_none()
+
+        if not student or student.enrollment_status == EnrollmentStatus.PENDING:
+            enrollment_state = "REQUIRED" if not student else "PENDING"
+            token = create_access_token(
+                data={"sub": str(user.id), "role": user.role.value},
+                scope="enrollment",
+            )
+            return TokenResponse(
+                access_token=token,
+                refresh_token="",
+                role=user.role.value,
+                user_id=str(user.id),
+                scope="enrollment",
+                enrollment_state=enrollment_state,
+            )
+
+        if not user.is_active:
+            raise HTTPException(
+                status_code=403,
+                detail="Account deactivated. Contact caretaker.",
+            )
 
     if settings.ENVIRONMENT != "development" and device_id and user.device_id and user.device_id != device_id:
         raise HTTPException(
@@ -156,7 +201,7 @@ async def refresh_tokens(refresh_token: str, redis: aioredis.Redis, db: AsyncSes
 
 async def _issue_tokens(user: User, redis: aioredis.Redis) -> TokenResponse:
     data = {"sub": str(user.id), "role": user.role.value}
-    access_token = create_access_token(data)
+    access_token = create_access_token(data, scope="full")
     refresh_token = create_refresh_token(data)
 
     from datetime import timedelta
@@ -172,6 +217,7 @@ async def _issue_tokens(user: User, redis: aioredis.Redis) -> TokenResponse:
         refresh_token=refresh_token,
         role=user.role.value,
         user_id=str(user.id),
+        scope="full",
     )
 
 
@@ -188,7 +234,14 @@ async def get_current_user(
     result = await db.execute(select(User).where(User.id == user_id))
     user = result.scalar_one_or_none()
 
-    if not user or not user.is_active:
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    scope = payload.get("scope", "full")
+    user.__token_scope__ = scope  # type: ignore[attr-defined]
+
+    # Enrollment-scope tokens are for pending/inactive students — skip is_active check
+    if scope != "enrollment" and not user.is_active:
         raise HTTPException(status_code=401, detail="User not found or inactive")
 
     return user
@@ -196,6 +249,11 @@ async def get_current_user(
 
 def require_roles(*roles: Role):
     async def role_checker(current_user: User = Depends(get_current_user)) -> User:
+        if getattr(current_user, "__token_scope__", "full") == "enrollment":
+            raise HTTPException(
+                status_code=403,
+                detail="Complete enrollment and await caretaker approval first.",
+            )
         if current_user.role not in roles:
             raise HTTPException(
                 status_code=403,

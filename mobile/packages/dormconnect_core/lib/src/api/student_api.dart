@@ -27,6 +27,13 @@ class StudentApi {
         .toList();
   }
 
+  Future<List<Student>> pendingEnrollments() async {
+    final resp = await _client.get('/api/v1/students/pending-enrollments');
+    return (resp.data as List<dynamic>)
+        .map((e) => Student.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
   Future<Map<String, dynamic>> enroll(Map<String, dynamic> data) async {
     final resp = await _client.post('/api/v1/students/enroll', data: data);
     return resp.data as Map<String, dynamic>;
@@ -45,6 +52,14 @@ class StudentApi {
   Future<Student> reject(String id, {String? reason}) async {
     final resp = await _client.post('/api/v1/students/$id/reject',
         data: {if (reason != null) 'reason': reason});
+    return Student.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<Student> reassignHostel(String id, String hostelId) async {
+    final resp = await _client.patch(
+      '/api/v1/students/$id/reassign-hostel',
+      data: {'hostel_id': hostelId},
+    );
     return Student.fromJson(resp.data as Map<String, dynamic>);
   }
 }

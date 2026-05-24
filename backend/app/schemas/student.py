@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field, ConfigDict
 
 class EnrollmentRequest(BaseModel):
     name: str = Field(..., min_length=2, max_length=100)
-    phone: str = Field(..., pattern=r"^[6-9]\d{9}$")
     roll_number: str = Field(..., min_length=3, max_length=50)
     hostel_id: uuid.UUID
     room_number: str = Field(..., min_length=1, max_length=20)
@@ -78,3 +77,7 @@ class RejectEnrollmentRequest(BaseModel):
 
 class PermanentCheckoutRequest(BaseModel):
     reason: str
+
+
+class ReassignHostelRequest(BaseModel):
+    hostel_id: uuid.UUID

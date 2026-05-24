@@ -11,8 +11,7 @@ final _hostelsProvider = FutureProvider<List<Hostel>>((ref) async {
 });
 
 class EnrollmentScreen extends ConsumerStatefulWidget {
-  final String phone;
-  const EnrollmentScreen({super.key, required this.phone});
+  const EnrollmentScreen({super.key});
 
   @override
   ConsumerState<EnrollmentScreen> createState() => _EnrollmentScreenState();
@@ -75,7 +74,6 @@ class _EnrollmentScreenState extends ConsumerState<EnrollmentScreen> {
     try {
       await ref.read(studentApiProvider).enroll({
         'name': _nameCtrl.text.trim(),
-        'phone': widget.phone,
         'roll_number': _rollCtrl.text.trim(),
         'hostel_id': _selectedHostelId!,
         'room_number': _roomCtrl.text.trim(),
@@ -83,7 +81,10 @@ class _EnrollmentScreenState extends ConsumerState<EnrollmentScreen> {
         'guardian_phone': _guardianPhoneCtrl.text.trim(),
         'guardian_relation': _guardianRelation,
       });
-      if (mounted) context.go('/auth/pending');
+      // After enrollment, update auth state to PENDING
+      if (mounted) {
+        ref.read(authProvider.notifier).onEnrollmentSubmitted();
+      }
     } catch (e) {
       if (mounted) DcSnackbar.error(context, e.toString());
     } finally {
@@ -93,6 +94,7 @@ class _EnrollmentScreenState extends ConsumerState<EnrollmentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final phone = ref.watch(authProvider).enrollmentPhone ?? '';
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
@@ -113,7 +115,7 @@ class _EnrollmentScreenState extends ConsumerState<EnrollmentScreen> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 _Step1(
-                  phone: widget.phone,
+                  phone: phone,
                   nameCtrl: _nameCtrl,
                   rollCtrl: _rollCtrl,
                   roomCtrl: _roomCtrl,
@@ -220,7 +222,7 @@ class _Step1 extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     color: AppColors.primary)),
             const SizedBox(height: 20),
-            // Phone — read-only, pre-filled from OTP
+            // Phone — read-only, pre-filled from OTP session
             TextFormField(
               initialValue: phone,
               readOnly: true,

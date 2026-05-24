@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+final _hostelsProvider = FutureProvider<List<Hostel>>((ref) async {
+  final resp = await ref.watch(apiClientProvider).get('/api/v1/hostels');
+  final list = resp.data as List<dynamic>;
+  return list.map((e) => Hostel.fromJson(e as Map<String, dynamic>)).toList();
+});
+
 final _enrollStudentProvider =
     FutureProvider.autoDispose.family<Student, String>((ref, id) async =>
         ref.watch(studentApiProvider).getById(id));
@@ -60,6 +66,87 @@ class _EnrollmentReviewScreenState
     } finally {
       if (mounted) setState(() => _loading = false);
     }
+  }
+
+  Future<void> _reassignHostel(Student student) async {
+    String? selectedHostelId;
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setModalState) {
+          final hostelsAsync = ref.watch(_hostelsProvider);
+          return Padding(
+            padding: EdgeInsets.only(
+                left: 20,
+                right: 20,
+                top: 20,
+                bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Reassign to Different Hostel',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
+                const SizedBox(height: 4),
+                const Text(
+                  'Student will remain PENDING in the new hostel.',
+                  style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+                ),
+                const SizedBox(height: 16),
+                hostelsAsync.when(
+                  loading: () => const DcLoading(),
+                  error: (e, _) => Text('Could not load hostels: $e',
+                      style: const TextStyle(color: AppColors.error)),
+                  data: (hostels) => DropdownButtonFormField<String>(
+                    value: selectedHostelId,
+                    decoration: InputDecoration(
+                      labelText: 'New Hostel',
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                      filled: true,
+                      fillColor: AppColors.surfaceVariant,
+                    ),
+                    items: hostels
+                        .where((h) => h.id != student.hostelId)
+                        .map((h) => DropdownMenuItem(value: h.id, child: Text(h.name)))
+                        .toList(),
+                    onChanged: (v) => setModalState(() => selectedHostelId = v),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: selectedHostelId == null
+                        ? null
+                        : () async {
+                            Navigator.pop(ctx);
+                            setState(() => _loading = true);
+                            try {
+                              await ref
+                                  .read(studentApiProvider)
+                                  .reassignHostel(student.id, selectedHostelId!);
+                              if (mounted) {
+                                DcSnackbar.success(context, 'Hostel reassigned.');
+                                context.go('/home/students');
+                              }
+                            } catch (e) {
+                              if (mounted) DcSnackbar.error(context, e.toString());
+                            } finally {
+                              if (mounted) setState(() => _loading = false);
+                            }
+                          },
+                    child: const Text('Reassign Hostel'),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Future<void> _reject(Student student) async {
@@ -214,6 +301,20 @@ class _EnrollmentReviewScreenState
                     icon: const Icon(Icons.check_circle_outline),
                     label: const Text('Approve — Identity Verified',
                         style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.textSecondary,
+                        side: const BorderSide(color: AppColors.border),
+                        minimumSize: const Size(double.infinity, 52)),
+                    onPressed: _loading ? null : () => _reassignHostel(student),
+                    icon: const Icon(Icons.swap_horiz_rounded),
+                    label: const Text('Wrong Hostel? Reassign',
+                        style: TextStyle(fontSize: 15)),
                   ),
                 ),
                 const SizedBox(height: 12),

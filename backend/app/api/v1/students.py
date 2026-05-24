@@ -1,6 +1,6 @@
 import uuid
 from typing import Optional
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -9,7 +9,7 @@ from app.models.user import User, Role
 from app.schemas.student import (
     EnrollmentRequest, EnrollmentResponse, StudentProfile,
     PendingEnrollmentResponse, ProfileUpdateRequest,
-    RejectEnrollmentRequest, PermanentCheckoutRequest,
+    RejectEnrollmentRequest, PermanentCheckoutRequest, ReassignHostelRequest,
 )
 from app.services import student_service
 
@@ -22,21 +22,23 @@ CARETAKER_PLUS = (Role.CARETAKER, Role.ASST_WARDEN, Role.WARDEN, Role.ASST_CHIEF
 async def enroll_student(
     data: EnrollmentRequest,
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    """
-    Register as a new student — no auth required, no file upload.
-    Account stays PENDING until physically verified by caretaker/warden.
-    """
-    return await student_service.create_enrollment(data, db)
+    """Requires enrollment-scope JWT. Phone is derived from the authenticated user."""
+    if getattr(current_user, "__token_scope__", "full") != "enrollment":
+        raise HTTPException(status_code=403, detail="Requires enrollment-scope token")
+    return await student_service.create_enrollment(data, current_user, db)
 
 
 @router.get("/pending-enrollments", response_model=list[PendingEnrollmentResponse])
 async def pending_enrollments(
-    hostel_id: uuid.UUID = Query(...),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(require_roles(*CARETAKER_PLUS)),
 ):
-    return await student_service.get_pending_enrollments(hostel_id, db)
+    """Auto-scoped to the staff member's assigned hostel."""
+    if not current_user.hostel_id:
+        raise HTTPException(status_code=400, detail="No hostel assigned to your account")
+    return await student_service.get_pending_enrollments(current_user.hostel_id, db)
 
 
 @router.post("/{student_id}/approve", response_model=StudentProfile)
@@ -58,11 +60,25 @@ async def reject_enrollment(
     return await student_service.reject_enrollment(student_id, body.reason, current_user, db)
 
 
+@router.patch("/{student_id}/reassign-hostel", response_model=StudentProfile)
+async def reassign_hostel(
+    student_id: uuid.UUID,
+    body: ReassignHostelRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(require_roles(*CARETAKER_PLUS)),
+):
+    """Move a pending enrollment to a different hostel."""
+    return await student_service.reassign_hostel(student_id, body.hostel_id, current_user, db)
+
+
 @router.get("/me", response_model=StudentProfile)
 async def my_profile(
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_roles(Role.STUDENT)),
+    current_user: User = Depends(get_current_user),
 ):
+    """Accessible with both full and enrollment-scope tokens."""
+    if current_user.role != Role.STUDENT:
+        raise HTTPException(status_code=403, detail="Student accounts only")
     return await student_service.get_student_profile_by_user(current_user.id, db)
 
 

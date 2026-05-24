@@ -3,8 +3,17 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'student.freezed.dart';
 part 'student.g.dart';
 
-enum EnrollmentStatus { pending, active, inactive, checkedOut }
-enum StudentStatus { inHostel, outHostel }
+enum EnrollmentStatus {
+  @JsonValue('PENDING') pending,
+  @JsonValue('ACTIVE') active,
+  @JsonValue('INACTIVE') inactive,
+  @JsonValue('CHECKED_OUT') checkedOut,
+}
+
+enum StudentStatus {
+  @JsonValue('IN') inHostel,
+  @JsonValue('OUT') outHostel,
+}
 
 @freezed
 class Student with _$Student {

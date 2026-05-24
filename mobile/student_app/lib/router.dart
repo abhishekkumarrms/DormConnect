@@ -38,12 +38,27 @@ class _RouterNotifier extends ChangeNotifier {
     if (loc == '/splash') return null;
     if (auth.isLoading) return null;
 
-    final isAuth = auth.isAuthenticated;
     const authRoutes = ['/auth/phone', '/auth/otp', '/auth/enroll', '/auth/pending'];
     final onAuthRoute = authRoutes.any((p) => loc.startsWith(p));
 
-    if (!isAuth && !onAuthRoute) return '/auth/phone';
-    if (isAuth && onAuthRoute) return '/home/dashboard';
+    // Enrollment-scope: route by enrollment state
+    if (auth.hasEnrollmentToken) {
+      if (auth.enrollmentState == 'REQUIRED') {
+        return loc.startsWith('/auth/enroll') ? null : '/auth/enroll';
+      }
+      if (auth.enrollmentState == 'PENDING') {
+        return loc == '/auth/pending' ? null : '/auth/pending';
+      }
+      // Unknown enrollment state — send to form
+      return loc.startsWith('/auth/enroll') ? null : '/auth/enroll';
+    }
+
+    // Not authenticated at all
+    if (!auth.isAuthenticated && !onAuthRoute) return '/auth/phone';
+
+    // Fully authenticated on an auth route
+    if (auth.isAuthenticated && onAuthRoute) return '/home/dashboard';
+
     return null;
   }
 }
@@ -64,7 +79,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           phone: state.uri.queryParameters['phone'] ?? '',
         ),
       ),
-      GoRoute(path: '/auth/enroll', builder: (_, state) => EnrollmentScreen(phone: state.uri.queryParameters['phone'] ?? '')),
+      GoRoute(path: '/auth/enroll', builder: (_, __) => const EnrollmentScreen()),
       GoRoute(path: '/auth/pending', builder: (_, __) => const PendingApprovalScreen()),
 
       ShellRoute(

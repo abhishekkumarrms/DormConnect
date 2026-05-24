@@ -20,30 +20,28 @@ logger = logging.getLogger(__name__)
 
 async def create_enrollment(
     data: EnrollmentRequest,
+    current_user: User,
     db: AsyncSession,
 ) -> EnrollmentResponse:
-    existing = await db.execute(select(User).where(User.phone == data.phone))
-    if existing.scalar_one_or_none():
-        raise HTTPException(status_code=409, detail="Phone number already registered")
+    # Guard: no duplicate enrollment
+    existing_student = await db.execute(
+        select(Student).where(Student.user_id == current_user.id)
+    )
+    if existing_student.scalar_one_or_none():
+        raise HTTPException(status_code=409, detail="Enrollment already submitted")
 
     hostel_result = await db.execute(select(Hostel).where(Hostel.id == data.hostel_id))
     hostel = hostel_result.scalar_one_or_none()
     if not hostel:
         raise HTTPException(status_code=404, detail="Hostel not found")
 
-    user = User(
-        phone=data.phone,
-        name=data.name,
-        role=Role.STUDENT,
-        hostel_id=data.hostel_id,
-        institution_id=hostel.institution_id,
-        is_active=False,
-    )
-    db.add(user)
-    await db.flush()
+    # Update user shell with name + hostel/institution
+    current_user.name = data.name
+    current_user.hostel_id = data.hostel_id
+    current_user.institution_id = hostel.institution_id
 
     student = Student(
-        user_id=user.id,
+        user_id=current_user.id,
         roll_number=data.roll_number,
         room_number=data.room_number,
         hostel_id=data.hostel_id,
@@ -61,16 +59,16 @@ async def create_enrollment(
         action="ENROLLMENT_SUBMITTED",
         entity_type="Student",
         entity_id=str(student.id),
-        new_value={"name": data.name, "roll_number": data.roll_number, "phone": data.phone},
+        new_value={"name": data.name, "roll_number": data.roll_number, "phone": current_user.phone},
     )
 
     await db.commit()
     await db.refresh(student)
-    await db.refresh(user)
+    await db.refresh(current_user)
 
     return EnrollmentResponse(
         id=student.id,
-        name=user.name,
+        name=current_user.name,
         roll_number=student.roll_number,
         enrollment_status=student.enrollment_status.value,
         created_at=student.created_at,
@@ -262,6 +260,35 @@ async def permanent_checkout(
 
     await db.commit()
     return {"message": "Student permanently checked out"}
+
+
+async def reassign_hostel(
+    student_id: uuid.UUID, new_hostel_id: uuid.UUID, caretaker_user: User, db: AsyncSession
+) -> StudentProfile:
+    student, user = await _get_student_and_user(student_id, db)
+
+    hostel = await db.get(Hostel, new_hostel_id)
+    if not hostel:
+        raise HTTPException(status_code=404, detail="Hostel not found")
+
+    old_hostel_id = str(student.hostel_id)
+    student.hostel_id = new_hostel_id
+    user.hostel_id = new_hostel_id
+    user.institution_id = hostel.institution_id
+
+    await log_audit(
+        db,
+        action="HOSTEL_REASSIGNED",
+        entity_type="Student",
+        entity_id=str(student.id),
+        performed_by=caretaker_user.id,
+        old_value={"hostel_id": old_hostel_id},
+        new_value={"hostel_id": str(new_hostel_id), "hostel_name": hostel.name},
+    )
+
+    await db.commit()
+    await db.refresh(student)
+    return _build_profile(student, user, hostel)
 
 
 async def get_room_occupants(hostel_id: uuid.UUID, room_number: str, db: AsyncSession) -> list[StudentProfile]:
