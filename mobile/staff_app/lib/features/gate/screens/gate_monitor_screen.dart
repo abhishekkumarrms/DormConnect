@@ -3,16 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final _liveOutProvider =
-    FutureProvider.autoDispose<List<MovementLog>>((ref) async =>
-        ref.watch(gateApiProvider).getLiveOut());
+    FutureProvider.autoDispose<List<MovementLog>>((ref) async {
+  final hostelId = ref.watch(currentUserProvider)?.hostelId;
+  return ref.watch(gateApiProvider).getLiveOut(hostelId: hostelId);
+});
 
 final _todayLogProvider =
-    FutureProvider.autoDispose<List<MovementLog>>((ref) async =>
-        ref.watch(gateApiProvider).getHistory(limit: 200));
+    FutureProvider.autoDispose<List<MovementLog>>((ref) async {
+  final hostelId = ref.watch(currentUserProvider)?.hostelId;
+  // Use hostel-scoped shift-log endpoint via apiClientProvider
+  if (hostelId == null) return [];
+  final resp = await ref
+      .read(apiClientProvider)
+      .get('/api/v1/gate/shift-log', params: {'hostel_id': hostelId});
+  final j = resp.data as Map<String, dynamic>;
+  return (j['logs'] as List? ?? [])
+      .map((e) => MovementLog.fromJson(e as Map<String, dynamic>))
+      .toList();
+});
 
 final _liveRequestsProvider =
-    FutureProvider.autoDispose<List<LiveRequest>>((ref) async =>
-        ref.watch(gateApiProvider).getLiveRequests());
+    FutureProvider.autoDispose<List<LiveRequest>>((ref) async {
+  final hostelId = ref.watch(currentUserProvider)?.hostelId;
+  return ref.watch(gateApiProvider).getLiveRequests(hostelId: hostelId);
+});
 
 class GateMonitorScreen extends ConsumerStatefulWidget {
   const GateMonitorScreen({super.key});

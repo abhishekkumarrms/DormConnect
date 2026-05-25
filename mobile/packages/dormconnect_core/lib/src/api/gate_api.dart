@@ -42,21 +42,54 @@ class GateApi {
     return resp.data as Map<String, dynamic>;
   }
 
-  Future<List<LiveRequest>> getLiveRequests() async {
-    final resp = await _client.get('/api/v1/gate/live-requests');
-    final list = resp.data as List<dynamic>;
-    return list.map((e) => LiveRequest.fromJson(e as Map<String, dynamic>)).toList();
+  Future<List<LiveRequest>> getLiveRequests({String? hostelId}) async {
+    final resp = await _client.get('/api/v1/gate/live-requests',
+        params: {if (hostelId != null) 'hostel_id': hostelId});
+    // Backend returns {exit_requests, entry_requests, ...} — combine both lists
+    final data = resp.data;
+    if (data is Map) {
+      final exit = (data['exit_requests'] as List? ?? []);
+      final entry = (data['entry_requests'] as List? ?? []);
+      return [...exit, ...entry]
+          .map((e) => _liveRequestFromEnriched(e as Map<String, dynamic>))
+          .toList();
+    }
+    // Legacy flat list fallback
+    return (data as List<dynamic>)
+        .map((e) => LiveRequest.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
-  Future<List<MovementLog>> getLiveOut() async {
-    final resp = await _client.get('/api/v1/gate/live-out');
-    final list = resp.data as List<dynamic>;
+  LiveRequest _liveRequestFromEnriched(Map<String, dynamic> e) =>
+      LiveRequest(
+        studentId: e['student_id'] as String,
+        otp: e['otp'] as String? ?? '',
+        studentName: e['student_name'] as String? ?? 'Unknown',
+        roomNumber: e['room_number'] as String?,
+        photoUrl: e['photo_url'] as String?,
+        secondsRemaining: e['expires_in_seconds'] as int? ?? 0,
+      );
+
+  Future<List<MovementLog>> getLiveOut({String? hostelId}) async {
+    final path = hostelId != null
+        ? '/api/v1/gate/live-out/$hostelId'
+        : '/api/v1/gate/live-out';
+    final resp = await _client.get(path);
+    final data = resp.data;
+    // Backend returns {students_out: [...], total_out_count: N, overdue_count: N}
+    final list = data is Map
+        ? (data['students_out'] as List? ?? [])
+        : data as List<dynamic>;
     return list.map((e) => MovementLog.fromJson(e as Map<String, dynamic>)).toList();
   }
 
-  Future<List<MovementLog>> getHistory({int page = 1, int limit = 50}) async {
+  Future<List<MovementLog>> getHistory(
+      {String? studentId, int page = 1, int limit = 50}) async {
+    final path = studentId != null
+        ? '/api/v1/gate/history/$studentId'
+        : '/api/v1/gate/history';
     final resp = await _client
-        .get('/api/v1/gate/history', params: {'page': page, 'limit': limit});
+        .get(path, params: {'page': page, 'limit': limit});
     final list = resp.data as List<dynamic>;
     return list.map((e) => MovementLog.fromJson(e as Map<String, dynamic>)).toList();
   }

@@ -186,7 +186,7 @@ async def live_requests(
 async def shift_log(
     hostel_id: uuid.UUID = Query(...),
     db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(require_roles(Role.GUARD)),
+    current_user: User = Depends(require_roles(Role.GUARD, *CARETAKER_PLUS)),
 ):
     """Today's movement log for the guard's shift."""
     today_start = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
@@ -202,11 +202,13 @@ async def shift_log(
     )
     logs = []
     for log, student, user in result.fetchall():
+        type_val = log.type.value if log.type else "OUT"
         logs.append({
             "id": str(log.id),
             "student_name": user.name or "Unknown",
             "room_number": student.room_number,
-            "movement_type": log.type.value if log.type else "OUT",
+            "type": type_val,          # MovementLog.fromJson compatibility
+            "movement_type": type_val, # ShiftLogEntry.fromJson compatibility
             "destination": log.destination,
             "is_flagged": bool(log.is_flagged),
             "is_overdue": bool(log.is_overdue),

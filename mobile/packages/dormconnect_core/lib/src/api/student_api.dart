@@ -16,11 +16,12 @@ class StudentApi {
     int page = 1,
     int limit = 50,
   }) async {
-    final resp = await _client.get('/api/v1/students', params: {
-      if (hostelId != null) 'hostel_id': hostelId,
+    // Backend uses /hostel/{id} path for hostel-scoped list
+    final path = hostelId != null
+        ? '/api/v1/students/hostel/$hostelId'
+        : '/api/v1/students/pending-enrollments';
+    final resp = await _client.get(path, params: {
       if (enrollmentStatus != null) 'enrollment_status': enrollmentStatus,
-      'page': page,
-      'limit': limit,
     });
     return (resp.data as List<dynamic>)
         .map((e) => Student.fromJson(e as Map<String, dynamic>))
